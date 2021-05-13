@@ -1,0 +1,42 @@
+---
+# always ensure fresh operator content
+- hosts: localhost
+  connection: local
+  vars_files:
+    - vars/main.yaml
+  roles:
+    - operators
+
+- hosts: builder
+  remote_user: root
+  vars_files:
+    - vars/main.yaml
+  roles:
+    - validations
+    - deprecations
+    - builder
+    - nat_vm
+
+# Connect as root first in order to push basic config and accesses
+- hosts: undercloud
+  remote_user: root
+  # vars:
+  #   ansible_user: root
+  vars_files:
+    - vars/main.yaml
+  roles:
+    - undercloud_prepare
+  tags:
+    - undercloud_prepare
+
+# Reconnect to the undercloud as stack user
+- hosts: undercloud
+  remote_user: stack
+  # vars:
+  #   ansible_user: stack
+  vars_files:
+    - vars/main.yaml
+  roles:
+    - undercloud
+  tags:
+    - undercloud_install

@@ -1,0 +1,8 @@
+---
+tripleo_repos_branch: master
+overclouds: 1
+num_osds: 4
+
+tripleo_repos_repos:
+  - ceph
+  - current-tripleo
