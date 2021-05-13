@@ -11,6 +11,7 @@ Xena cycle.
 ```
 git clone git@github.com:fultonj/xena.git
 pushd xena/init
+./git-init.sh alias
 ./git-init.sh tht
 popd
 ```

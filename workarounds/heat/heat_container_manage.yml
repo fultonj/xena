@@ -1,0 +1,17 @@
+- hosts: localhost
+  become: true
+  tasks:
+    - name: Manage step_4 containers using tripleo-ansible
+      block:
+        - name: "Manage heat-engine container at step 4 with tripleo-ansible"
+          include_role:
+            name: tripleo_container_manage
+          vars:
+            tripleo_container_manage_systemd_order: true
+            tripleo_container_manage_config_patterns: 'heat_engine.json'
+            tripleo_container_manage_config: "/var/lib/tripleo-config/container-startup-config/step_4"
+            tripleo_container_manage_config_id: "tripleo_step4"
+            tripleo_container_manage_clean_orphans: false
+            tripleo_container_manage_config_overrides:
+              heat_engine:
+                image: undercloud.ctlplane.mydomain.tld:8787/tripleomaster/openstack-heat-engine:current-tripleo-devel-ps3

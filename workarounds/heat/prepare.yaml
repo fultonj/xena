@@ -1,0 +1,48 @@
+parameter_defaults:
+    ContainerImagePrepareDebug: true
+    ContainerImageRegistryCredentials: {}
+    ContainerImagePrepare:
+    -   push_destination: true
+        excludes:
+          - heat-engine
+        set:
+            ceph_alertmanager_image: alertmanager
+            ceph_alertmanager_namespace: quay.ceph.io/prometheus
+            ceph_alertmanager_tag: v0.16.2
+            ceph_grafana_image: grafana
+            ceph_grafana_namespace: quay.ceph.io/app-sre
+            ceph_grafana_tag: 6.7.4
+            ceph_image: daemon
+            ceph_namespace: quay.ceph.io/ceph-ci
+            ceph_node_exporter_image: node-exporter
+            ceph_node_exporter_namespace: quay.ceph.io/prometheus
+            ceph_node_exporter_tag: v0.17.0
+            ceph_prometheus_image: prometheus
+            ceph_prometheus_namespace: quay.ceph.io/prometheus
+            ceph_prometheus_tag: v2.7.2
+            ceph_tag: v6.0.0-stable-6.0-pacific-centos-8-x86_64
+            name_prefix: openstack-
+            name_suffix: ''
+            namespace: quay.io/tripleomaster
+            neutron_driver: ovn
+            rhel_containers: false
+            tag: current-tripleo
+    -   push_destination: undercloud.ctlplane.mydomain.tld:8787
+        includes:
+          - heat-engine
+        set:
+            name_prefix: openstack-
+            name_suffix: ''
+            namespace: quay.io/tripleomaster
+            neutron_driver: ovn
+            rhel_containers: false
+            tag: current-tripleo
+        modify_role: tripleo-modify-image
+        modify_append_tag: "-devel-ps3"
+        modify_vars:
+          tasks_from: dev_install.yml
+          source_image: quay.io/tripleomaster/openstack-heat-engine:current-tripleo
+          refspecs:
+            -
+              project: heat
+              refspec: refs/changes/62/787662/3
