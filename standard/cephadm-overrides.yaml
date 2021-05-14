@@ -1,0 +1,6 @@
+---
+parameter_defaults:
+  # CephDynamicSpec: true
+  # CephSpecPath: "/home/stack/wallaby/standard/ceph_spec.yml"
+  CephPoolDefaultSize: 3   # because i also use low mem usage
+  CephPoolDefaultPgNum: 16 # because i also use low mem usage

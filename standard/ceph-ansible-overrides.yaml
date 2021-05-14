@@ -1,0 +1,22 @@
+---
+parameter_defaults:
+  CephPoolDefaultSize: 3
+  CephPoolDefaultPgNum: 128
+  CephAnsibleRepo: tripleo-centos-ceph-nautilus
+  CephAnsiblePlaybookVerbosity: 3
+  # CephAnsibleEnvironmentVariables:
+  #   ANSIBLE_HOST_KEY_CHECKING: 'False'
+  CephAnsibleExtraConfig:
+    ceph_osd_docker_cpu_limit: 1
+  CephConfigOverrides:
+    osd_recovery_op_priority: 3
+    osd_recovery_max_active: 3
+    osd_max_backfills: 1
+  CephAnsibleDisksConfig:
+    osd_scenario: lvm
+    osd_objectstore: bluestore
+    devices:
+      - /dev/sda
+      - /dev/sdb
+      - /dev/sdc
+      - /dev/sdd
