@@ -1,6 +1,0 @@
----
-parameter_defaults:
-  ContainerCli: podman
-  SELinuxMode: permissive
-  ConfigDebug: True
-  NtpServer: pool.ntp.org

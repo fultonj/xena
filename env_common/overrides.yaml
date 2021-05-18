@@ -1,3 +1,4 @@
 ---
 parameter_defaults:
   ContainerCli: podman
+  SELinuxMode: permissive

@@ -65,22 +65,17 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/containers-prepare-parameter.yaml \
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
+         --environment-directory ../env_common \
          -e ceph-ansible-overrides.yaml \
-         --environment-directory env_dir \
          -r ~/oc0-role-data.yaml \
          -n ~/oc0-network-data.yaml \
          --disable-validations --deployed-server
 
-    ## Holding these here for now
-    # -e ~/templates/environments/enable-swap.yaml \
-    # -e /home/stack/overcloud-0-yml/network-env.yaml \
-    # -e overrides.yaml \
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then
     pushd $DIR
     bash ansible-playbook-command.sh
     # bash ansible-playbook-command.sh --skip-tags run_ceph_ansible
-    # bash ansible-playbook-command.sh --start-at-task 'External deployment step 4'
     popd
 fi
