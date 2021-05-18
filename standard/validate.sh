@@ -10,7 +10,7 @@ NOVA=0
 STACK=overcloud-0
 INV=~/overcloud-deploy/$STACK/config-download/$STACK/tripleo-ansible-inventory.yaml
 RC=/home/stack/${STACK}rc
-CEPHADM=0
+CEPHADM=1
 
 function run_on_mon {
     if [ $CEPHADM -eq 1 ]; then

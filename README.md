@@ -15,3 +15,4 @@ pushd xena/init
 ./git-init.sh tht
 popd
 ```
+- Create a [standard deployment](standard) with Ceph

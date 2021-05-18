@@ -60,16 +60,20 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/templates/environments/low-memory-usage.yaml \
          -e ~/templates/environments/docker-ha.yaml \
          -e ~/templates/environments/podman.yaml \
-         -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
-         -e ~/templates/environments/disable-swift.yaml \
+         -e ~/templates/environments/cephadm/cephadm.yaml \
          -e ~/containers-prepare-parameter.yaml \
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
          --environment-directory ../env_common \
-         -e ceph-ansible-overrides.yaml \
+         -e cephadm-overrides.yaml \
          -r ~/oc0-role-data.yaml \
          -n ~/oc0-network-data.yaml \
          --disable-validations --deployed-server
+
+    # park ceph-ansible options here
+    #     -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
+    #     -e ~/templates/environments/disable-swift.yaml \
+    #     -e ceph-ansible-overrides.yaml \
 
 fi
 # -------------------------------------------------------
