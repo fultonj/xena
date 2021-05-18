@@ -1,0 +1,51 @@
+parameter_defaults:
+    VipSubnetMap:
+        ctlplane: ctlplane-subnet
+        InternalApi: internal_api_cloud_0_subnet
+        Storage: storage_cloud_0_subnet
+        StorageMgmt: storage_mgmt_cloud_0_subnet
+        Tenant: tenant_cloud_0_subnet
+        External: external_cloud_0_subnet
+        redis: internal_api_cloud_0_subnet
+        ovn_dbs: internal_api_cloud_0_subnet
+    ValidateControllersIcmp: false
+    ControlPlaneDefaultRoute: 192.168.24.1
+    ControlPlaneSubnetCidr: '24'
+    DnsServers:
+    - 1.1.1.1
+    - 208.67.222.222
+    - 208.67.220.220
+    EC2MetadataIp: 192.168.24.1
+    ExternalAllocationPools:
+    -   start: '10.10.0.151'
+        end: '10.10.0.250'
+    ExternalInterfaceDefaultRoute: 192.168.24.1
+    ExternalNetCidr: 10.10.0.0/24
+    ExternalNetworkVlanID: 19
+    ExternalMtu: 1300
+    InternalApiAllocationPools:
+    -   start: '172.16.13.4'
+        end: '172.16.13.250'
+    InternalApiNetCidr: '172.16.13.0/24'
+    InternalApiNetworkVlanID: 13
+    NeutronBridgeMappings: ''
+    NeutronEnableDVR: 'false'
+    NeutronExternalNetworkBridge: ''
+    NeutronNetworkType: geneve
+    NeutronNetworkVLANRanges: tenant:1000:2000
+    NeutronTunnelTypes: geneve
+    StorageAllocationPools:
+    -   start: '172.16.11.4'
+        end: '172.16.11.250'
+    StorageMgmtAllocationPools:
+    -   start: '172.16.12.4'
+        end: '172.16.12.250'
+    StorageMgmtNetCidr: '172.16.12.0/24'
+    StorageMgmtNetworkVlanID: 12
+    StorageNetCidr: '172.16.11.0/24'
+    StorageNetworkVlanID: 11
+    TenantAllocationPools:
+    -   start: '172.16.14.4'
+        end: '172.16.14.250'
+    TenantNetCidr: '172.16.14.0/24'
+    TenantNetworkVlanID: 14
