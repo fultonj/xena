@@ -51,7 +51,6 @@ if [[ $HEAT -eq 1 ]]; then
          --templates ~/templates \
          --stack $STACK \
          --timeout 90 \
-         --libvirt-type qemu \
          -e ~/templates/environments/deployed-server-environment.yaml \
          -e deployed-metal-$STACK.yaml \
          -e ~/templates/environments/network-isolation.yaml \
@@ -65,15 +64,19 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/containers-prepare-parameter.yaml \
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
-         -e /home/stack/overcloud-0-yml/network-env.yaml \
-         -e overrides.yaml \
-         -e ceph-ansible-overrides.yaml \
+         --environment-directory /home/stack/overcloud-0-yml \
          -r ~/oc0-role-data.yaml \
          -n ~/oc0-network-data.yaml \
          --disable-validations --deployed-server
 
-    # hold my beer while i deploy this thing
+    ## Holding these here for now
+    # --libvirt-type qemu \
     # -e ~/templates/environments/enable-swap.yaml \
+    # -e /home/stack/overcloud-0-yml/network-env.yaml \
+    # -e overrides.yaml \
+
+    ## I put this in ~/overcloud-0-yml/
+    # -e ceph-ansible-overrides.yaml \
 
 fi
 # -------------------------------------------------------
