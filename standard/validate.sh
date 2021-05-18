@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-OVERALL=0
+OVERALL=1
 KEYS=0
 MDS=0
-GLANCE=0
-CINDER=0
-NOVA=1
+GLANCE=1
+CINDER=1
+NOVA=0
 
 STACK=overcloud-0
 INV=~/overcloud-deploy/$STACK/config-download/$STACK/tripleo-ansible-inventory.yaml
