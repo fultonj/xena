@@ -14,4 +14,4 @@
             tripleo_container_manage_clean_orphans: false
             tripleo_container_manage_config_overrides:
               heat_engine:
-                image: undercloud.ctlplane.mydomain.tld:8787/tripleomaster/openstack-heat-engine:current-tripleo-devel-ps3
+                image: undercloud.ctlplane:8787/tripleomaster/openstack-heat-engine:current-tripleo-devel-ps3

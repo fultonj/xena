@@ -12,7 +12,7 @@ fi
 
 if [[ $PULL -eq 1 ]]; then
     NEW_IMG=$(grep ContainerHeatEngineImage ~/containers-env-file-heat-patch.yaml |\
-                  awk {'print $2'})
+                  awk {'print $2'} | sed s/.mydomain.tld//g )
     sudo podman pull $NEW_IMG
     sudo podman images | grep heat-engine
 fi
