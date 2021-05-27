@@ -1,0 +1,18 @@
+---
+parameter_defaults:
+  CephPoolDefaultSize: 3   # because I also use low mem usage
+  CephPoolDefaultPgNum: 16 # because I also use low mem usage
+  # HCI Tuning
+  # 1. Memory
+  #    https://github.com/ceph/ceph/pull/39550
+  #     'ceph config set osd osd_memory_target_autotune true'
+  # 2. CPU
+  #    automatically set affinity to numa node when storage and network match
+  #     'ceph config set osd osd_numa_auto_affinity true'
+  #    or target a specific numa node
+  #     'ceph config set osd osd_numa_node 0'
+  CephConfigOverrides:
+    osd:
+      osd_memory_target_autotune: true
+      osd_numa_auto_affinity: true
+      # osd_numa_node: 0
