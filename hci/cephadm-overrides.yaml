@@ -2,7 +2,10 @@
 parameter_defaults:
   CephPoolDefaultSize: 3   # because I also use low mem usage
   CephPoolDefaultPgNum: 16 # because I also use low mem usage
-  # HCI Tuning
+  # OpenStack Tuning
+  CephHciOsdType: hdd
+  CephHciOsdCount: 4
+  # Ceph Tuning
   # 1. Memory
   #    https://github.com/ceph/ceph/pull/39550
   #     'ceph config set osd osd_memory_target_autotune true'
