@@ -9,13 +9,20 @@ parameter_defaults:
   # 1. Memory
   #    https://github.com/ceph/ceph/pull/39550
   #     'ceph config set osd osd_memory_target_autotune true'
+  #     'ceph config set mgr mgr/cephadm/autotune_memory_target_ratio 0.2'
   # 2. CPU
   #    automatically set affinity to numa node when storage and network match
   #     'ceph config set osd osd_numa_auto_affinity true'
   #    or target a specific numa node
   #     'ceph config set osd osd_numa_node 0'
-  CephConfigOverrides:
+  # 3. Backfill (following are cephadm Pacific defaults)
+  #    osd_recovery_op_priority: 3
+  #    osd_max_backfills: 1
+  #    osd_recovery_max_active_hdd: 3
+  #    osd_recovery_max_active_ssd: 10
+  CephConfigSetMap:
     osd:
       osd_memory_target_autotune: true
       osd_numa_auto_affinity: true
-      # osd_numa_node: 0
+    mgr:
+      mgr/cephadm/autotune_memory_target_ratio: 0.2
