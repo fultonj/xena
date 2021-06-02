@@ -48,6 +48,7 @@ if [[ $HEAT -eq 1 ]]; then
     fi
     
     time openstack overcloud deploy \
+         --disable-container-prepare \
          --templates ~/templates \
          --stack $STACK \
          --timeout 90 \
