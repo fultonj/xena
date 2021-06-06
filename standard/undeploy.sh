@@ -4,8 +4,8 @@ CLEAN=1
 STACK=overcloud-0
 
 # workaround https://bugs.launchpad.net/tripleo/+bug/1928457
-openstack port delete ovn_dbs_virtual_ip
-openstack port delete redis_virtual_ip
+# openstack port delete ovn_dbs_virtual_ip
+# openstack port delete redis_virtual_ip
 
 openstack overcloud delete $STACK --yes
 
