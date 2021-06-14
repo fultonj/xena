@@ -1,0 +1,57 @@
+- name: Storage
+  vip: true
+  name_lower: storage_cloud_0
+  service_net_map_replace: storage
+  subnets:
+    storage_cloud_0_subnet:
+      ip_subnet: '172.16.11.0/24'
+      allocation_pools: [{'start': '172.16.11.4', 'end': '172.16.11.250'}]
+      vlan: 11
+- name: StorageMgmt
+  vip: true
+  name_lower: storage_mgmt_cloud_0
+  service_net_map_replace: storage_mgmt
+  subnets:
+    storage_mgmt_cloud_0_subnet:
+      ip_subnet: '172.16.12.0/24'
+      allocation_pools: [{'start': '172.16.12.4', 'end': '172.16.12.250'}]
+      vlan: 12
+- name: InternalApi
+  vip: true
+  name_lower: internal_api_cloud_0
+  service_net_map_replace: internal_api
+  subnets:
+    internal_api_cloud_0_subnet:
+      ip_subnet: '172.16.13.0/24'
+      allocation_pools: [{'start': '172.16.13.4', 'end': '172.16.13.250'}]
+      vlan: 13
+- name: Tenant
+  vip: false  # Tenant network does not use VIPs
+  name_lower: tenant_cloud_0
+  service_net_map_replace: tenant
+  subnets:
+    tenant_cloud_0_subnet:
+      ip_subnet: '172.16.14.0/24'
+      allocation_pools: [{'start': '172.16.14.4', 'end': '172.16.14.250'}]
+      vlan: 14
+- name: External
+  vip: true
+  name_lower: external_cloud_0
+  service_net_map_replace: external
+  subnets:
+    external_cloud_0_subnet:
+      ip_subnet: '192.168.100.0/24'
+      allocation_pools: [{'start': '192.168.100.15', 'end': '192.168.100.100'}]
+      gateway_ip: '192.168.100.1'
+      vlan: 100
+- name: Management
+  # Management network is enabled by default for backwards-compatibility, but
+  # is not included in any roles by default. Add to role definitions to use.
+  vip: false  # Management network does not use VIPs
+  name_lower: management_cloud_0
+  service_net_map_replace: management
+  subnets:
+    management_cloud_0_subnet:
+      ip_subnet: '10.0.21.0/24'
+      allocation_pools: [{'start': '10.0.21.4', 'end': '10.0.21.250'}]
+      vlan: 16
