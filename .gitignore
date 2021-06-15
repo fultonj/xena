@@ -131,3 +131,4 @@ dmypy.json
 # Extra
 init/get-pip.py
 deployed-metal-*
+deployed-network-*

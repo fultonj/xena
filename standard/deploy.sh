@@ -4,13 +4,14 @@ IRONIC=1
 HEAT=1
 DOWN=0
 
-STACK=overcloud-0
+STACK=overcloud
 DIR=/home/stack/overcloud-deploy/$STACK/config-download
 NODE_COUNT=7
 
 source ~/stackrc
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
+NET="../metalsmith/deployed-network-${STACK}.yaml"
 if [[ $IRONIC -eq 1 ]]; then
     if [[ ! -e $METAL ]]; then
         echo "$METAL is missing. Deploying nodes with metalsmith."
@@ -32,6 +33,7 @@ if [[ $IRONIC -eq 1 ]]; then
 fi
 if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
+    cp $NET deployed-network-$STACK.yaml
 fi
 
 # -------------------------------------------------------
@@ -54,6 +56,7 @@ if [[ $HEAT -eq 1 ]]; then
          --libvirt-type qemu \
          -e ~/templates/environments/deployed-server-environment.yaml \
          -e deployed-metal-$STACK.yaml \
+         -e deployed-network-$STACK.yaml \
          -e ~/templates/environments/network-isolation.yaml \
          -e ~/templates/environments/network-environment.yaml \
          -e ~/templates/environments/disable-telemetry.yaml \
