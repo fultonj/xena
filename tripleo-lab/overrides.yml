@@ -2,7 +2,8 @@
 tripleo_repos_branch: master
 overclouds: 1
 num_osds: 4
+tripleo_overcloud_node_provision_network_ports: true
 
 tripleo_repos_repos:
   - ceph
-  - current-tripleo
+  - current-tripleo-dev
