@@ -7,3 +7,8 @@ tripleo_overcloud_node_provision_network_ports: true
 tripleo_repos_repos:
   - ceph
   - current-tripleo-dev
+
+undercloud_config:
+  - section: ctlplane-subnet
+    option: masquerade
+    value: true

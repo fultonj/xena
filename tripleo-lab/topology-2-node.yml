@@ -1,0 +1,24 @@
+---
+vms:
+  - name: undercloud
+    cpu: 4
+    memory: 14336
+    interfaces:
+      - mac: "24:42:53:21:52:15"
+        network: default
+      - mac: "24:42:53:21:52:16"
+    autostart: yes
+  - name: controller-0
+    cpu: 4
+    memory: 8192
+    interfaces:
+      - mac: "24:42:53:21:52:25"
+      - mac: "24:42:53:21:52:26"
+    autostart: no
+  - name: compute-0
+    cpu: 2
+    memory: 5120
+    interfaces:
+      - mac: "24:42:53:21:52:75"
+      - mac: "24:42:53:21:52:76"
+    autostart: no
