@@ -7,7 +7,7 @@ GLANCE=1
 CINDER=1
 NOVA=0
 
-STACK=overcloud
+STACK=overcloud-0
 INV=~/overcloud-deploy/$STACK/config-download/$STACK/tripleo-ansible-inventory.yaml
 RC=/home/stack/${STACK}rc
 CEPHADM=1

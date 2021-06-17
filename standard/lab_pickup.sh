@@ -3,7 +3,7 @@
 # pickup from what tripleo-lab already deployed as described
 # in https://github.com/fultonj/xena/tree/main/networkv2
 
-STACK=overcloud
+STACK=overcloud-0
 
 pushd ~
 sed -i \

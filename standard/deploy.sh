@@ -4,7 +4,7 @@ IRONIC=0
 HEAT=1
 DOWN=0
 
-STACK=overcloud
+STACK=overcloud-0
 DIR=/home/stack/overcloud-deploy/$STACK/config-download
 NODE_COUNT=7
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CLEAN=1
-STACK=overcloud
+STACK=overcloud-0
 
 # workaround https://bugs.launchpad.net/tripleo/+bug/1928457
 # openstack port delete ovn_dbs_virtual_ip
