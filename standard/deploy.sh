@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IRONIC=1
+IRONIC=0
 HEAT=1
 DOWN=0
 
@@ -39,7 +39,7 @@ fi
 # -------------------------------------------------------
 if [[ $HEAT -eq 1 ]]; then
     if [[ ! -d ~/templates ]]; then
-        ln -s /usr/share/openstack-tripleo-heat-templates ~/templates
+        cp -r /usr/share/openstack-tripleo-heat-templates ~/templates
     fi
     if [[ $NODE_COUNT -gt 0 ]]; then
         FOUND_COUNT=$(metalsmith -f value -c "Hostname" list | wc -l)
@@ -54,23 +54,24 @@ if [[ $HEAT -eq 1 ]]; then
          --stack $STACK \
          --timeout 90 \
          --libvirt-type qemu \
-         -e ~/templates/environments/deployed-server-environment.yaml \
-         -e deployed-metal-$STACK.yaml \
-         -e deployed-network-$STACK.yaml \
-         -e ~/templates/environments/network-isolation.yaml \
-         -e ~/templates/environments/network-environment.yaml \
+         -e ~/templates/environments/deployed-server-deployed-neutron-ports.yaml \
+         -e ~/templates/environments/net-single-nic-with-vlans.yaml \
          -e ~/templates/environments/disable-telemetry.yaml \
          -e ~/templates/environments/low-memory-usage.yaml \
-         -e ~/templates/environments/docker-ha.yaml \
          -e ~/templates/environments/podman.yaml \
+         -e ~/templates/environments/docker-ha.yaml \
          -e ~/templates/environments/cephadm/cephadm.yaml \
+         -r ~/oc0-role-data.yaml \
+         -n ~/oc0-network-data.yaml \
+         -e ~/overcloud-vips-provisioned-0.yaml \
+         -e ~/vip_subnet_map.yaml \
+         -e deployed-network-$STACK.yaml \
+         -e deployed-metal-$STACK.yaml \
          -e ~/containers-prepare-parameter.yaml \
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
-         --environment-directory ../env_common \
+         -e ~/xena/env_common/overrides.yaml \
          -e cephadm-overrides.yaml \
-         -r ~/oc0-role-data.yaml \
-         -n ~/oc0-network-data.yaml \
          --disable-validations --deployed-server
 
     # park ceph-ansible options here
