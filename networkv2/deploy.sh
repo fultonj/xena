@@ -1,7 +1,7 @@
 #!/bin/bash
 
 STACK=overcloud-0
-source ~/stackrc;
+source ~/stackrc
 
 openstack overcloud deploy \
           --templates ~/templates \
@@ -20,4 +20,5 @@ openstack overcloud deploy \
           -e ~/containers-prepare-parameter.yaml \
           -e ~/generated-container-prepare.yaml \
           -e ~/oc0-domain.yaml \
+          -e ~/xena/env_common/overrides.yaml \
           --disable-validations --deployed-server
