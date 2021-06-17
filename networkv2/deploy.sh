@@ -21,4 +21,4 @@ openstack overcloud deploy \
           -e ~/generated-container-prepare.yaml \
           -e ~/oc0-domain.yaml \
           -e ~/xena/env_common/overrides.yaml \
-          --disable-validations --deployed-server
+          --libvirt-type qemu --disable-validations --deployed-server
