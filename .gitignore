@@ -132,3 +132,4 @@ dmypy.json
 init/get-pip.py
 deployed-metal-*
 deployed-network-*
+cirros-*
