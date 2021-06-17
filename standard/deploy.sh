@@ -48,8 +48,12 @@ if [[ $HEAT -eq 1 ]]; then
             exit 1
         fi
     fi
+
+    # Use this as needed to speed up stack updates
+    # --disable-container-prepare \
     
     time openstack overcloud deploy \
+         --disable-container-prepare \
          --templates ~/templates \
          --stack $STACK \
          --timeout 90 \
