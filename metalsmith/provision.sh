@@ -3,7 +3,7 @@
 source ~/stackrc
 STACK=$1
 NETWORK=1
-# ^ boolean to delete and re-deploy network
+# ^ boolean deploy network
 
 if [[ -z $STACK ]]; then
     echo "Usage: $0 <STACK_NAME>"
@@ -24,7 +24,7 @@ if [[ $NETWORK -eq 1 ]]; then
     openstack overcloud network provision \
               --output $NETWORK_OUTPUT_FILE \
               $PWD/network_data.yaml
-    sed -i 's|/usr/share/openstack-tripleo-heat-templates|/home/stack/tripleo-heat-templates|g' $NETWORK_OUTPUT_FILE
+    sed -i 's|/usr/share/openstack-tripleo-heat-templates|/home/stack/templates|g' $NETWORK_OUTPUT_FILE
 fi
 
 # METAL
@@ -46,7 +46,7 @@ if [[ ! -z $STACK && ! -z $NODE_FILE ]]; then
               --output $METAL_OUTPUT_FILE \
               $NODE_FILE
     if [[ -e $METAL_OUTPUT_FILE ]]; then
-        sed -i 's|/usr/share/openstack-tripleo-heat-templates|/home/stack/tripleo-heat-templates|g' $METAL_OUTPUT_FILE
+        sed -i 's|/usr/share/openstack-tripleo-heat-templates|/home/stack/templates|g' $METAL_OUTPUT_FILE
     fi
 else
     echo "Exiting: stack ($STACK) and node_file ($NODE_FILE) are not both defined"
