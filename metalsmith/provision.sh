@@ -2,7 +2,7 @@
 
 source ~/stackrc
 STACK=$1
-NETWORK=1
+NETWORK=0
 # ^ boolean deploy network
 
 if [[ -z $STACK ]]; then
@@ -13,8 +13,8 @@ fi
 # NETWORK
 NETWORK_OUTPUT_FILE="$PWD/deployed-network-${STACK}.yaml"
 if [[ $NETWORK -eq 1 ]]; then
-    if [[ ! -e $PWD/network_data.yaml ]]; then
-        echo "Exiting: $PWD/network_data.yaml is missing"
+    if [[ ! -e ~/oc0-network-data.yaml ]]; then
+        echo "Exiting: ~/oc0-network-data.yaml is missing"
         exit 1
     fi
     if [[ -e $NETWORK_OUTPUT_FILE ]]; then
@@ -23,8 +23,12 @@ if [[ $NETWORK -eq 1 ]]; then
     echo "Deploying network from network_data.yaml and creating $NETWORK_OUTPUT_FILE"
     openstack overcloud network provision \
               --output $NETWORK_OUTPUT_FILE \
-              $PWD/network_data.yaml
+              ~/oc0-network-data.yaml
     sed -i 's|/usr/share/openstack-tripleo-heat-templates|/home/stack/templates|g' $NETWORK_OUTPUT_FILE
+else
+    if [[ ! -e $NETWORK_OUTPUT_FILE ]]; then
+        cp ~/overcloud-networks-provisioned-0.yaml $NETWORK_OUTPUT_FILE
+    fi
 fi
 
 # METAL
