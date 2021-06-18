@@ -34,7 +34,7 @@ if [[ DEV -eq 1 ]]; then
         cp -v ~/containers-prepare-parameter.yaml ~/containers-prepare-parameter.yaml.nondev
     fi
     OLD=$(grep ceph_tag ~/containers-prepare-parameter.yaml | awk {'print $2'})
-    NEW=v6.0.0-stable-6.0-pacific-centos-8-x86_64
+    NEW=latest-pacific-devel
     sed -i -e s/$OLD/$NEW/g ~/containers-prepare-parameter.yaml
     # OLD: ceph_tag: v6.0.0-stable-6.0-pacific-centos-8-x86_64
     # NEW: ceph_tag: latest-pacific-devel
