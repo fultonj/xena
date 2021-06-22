@@ -1,0 +1,4 @@
+---
+parameter_defaults:
+  CephDynamicSpec: false
+  DeployedCeph: true
