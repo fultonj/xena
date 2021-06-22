@@ -16,12 +16,6 @@ if [[ $IRONIC -eq 1 ]]; then
     if [[ ! -e $METAL ]]; then
         echo "$METAL is missing. Deploying nodes with metalsmith."
         pushd ../metalsmith
-        if [[ $NODE_COUNT -eq 7 ]]; then
-            ln -s standard-7.yaml overcloud-0.yaml
-        fi
-        if [[ $NODE_COUNT -eq 3 ]]; then
-            ln -s standard-3.yaml overcloud-0.yaml
-        fi
         bash provision.sh $STACK
         popd
     fi
@@ -47,18 +41,19 @@ if [[ $HEAT -eq 1 ]]; then
     if [[ ! -d ~/templates ]]; then
         cp -r /usr/share/openstack-tripleo-heat-templates ~/templates
     fi
-    # if [[ $NODE_COUNT -gt 0 ]]; then
-    #     FOUND_COUNT=$(metalsmith -f value -c "Hostname" list | wc -l)
-    #     if [[ $NODE_COUNT != $FOUND_COUNT ]]; then
-    #         echo "Expecting $NODE_COUNT nodes but $FOUND_COUNT nodes have been deployed"
-    #         exit 1
-    #     fi
-    # fi
+    if [[ $NODE_COUNT -gt 0 ]]; then
+        FOUND_COUNT=$(metalsmith -f value -c "Hostname" list | wc -l)
+        if [[ $NODE_COUNT != $FOUND_COUNT ]]; then
+            echo "Expecting $NODE_COUNT nodes but $FOUND_COUNT nodes have been deployed"
+            exit 1
+        fi
+    fi
 
     # Use this as needed to speed up stack updates
     # --disable-container-prepare \
     
     time openstack overcloud deploy \
+         --disable-container-prepare \
          --templates ~/templates \
          --stack $STACK \
          --timeout 90 \
