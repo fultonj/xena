@@ -21,7 +21,10 @@ for F in deployed-{metal,network}-$STACK.yaml cirros-0.4.0-x86_64-disk.{raw,img}
 done
 
 if [[ $CLEAN -eq 1 ]]; then
-    for I in $(seq 0 2); do
-        bash ../metalsmith/clean-disks.sh oc0-ceph-$I
+    for H in $(grep hostname ../metalsmith/${STACK}.yaml  | grep ceph  | awk {'print $3'});
+    do
+        bash ../metalsmith/clean-disks.sh $H
     done
 fi
+
+rm ../metalsmith/${STACK}.yaml
