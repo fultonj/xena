@@ -2,10 +2,12 @@
 
 CLEAN=1
 STACK=overcloud-0
+# STACK=standard-3
 
-# workaround https://bugs.launchpad.net/tripleo/+bug/1928457
-# openstack port delete ovn_dbs_virtual_ip
-# openstack port delete redis_virtual_ip
+METAL=deployed-metal-$STACK.yaml
+grep cephstorage $METAL \
+    | grep -v CephStorageHostnameFormat \
+    | awk {'print $2'} > /tmp/ceph_nodes
 
 openstack overcloud delete $STACK --yes
 
@@ -21,7 +23,8 @@ for F in deployed-{metal,network}-$STACK.yaml cirros-0.4.0-x86_64-disk.{raw,img}
 done
 
 if [[ $CLEAN -eq 1 ]]; then
-    for I in $(seq 0 2); do
-        bash ../metalsmith/clean-disks.sh oc0-ceph-$I
+    for H in $(cat /tmp/ceph_nodes); do
+        bash ../metalsmith/clean-disks.sh $H
     done
 fi
+rm /tmp/ceph_nodes

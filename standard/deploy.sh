@@ -5,8 +5,10 @@ HEAT=1
 DOWN=0
 
 STACK=overcloud-0
-DIR=/home/stack/overcloud-deploy/$STACK/config-download
 NODE_COUNT=7
+# STACK=standard-3
+# NODE_COUNT=3
+DIR=/home/stack/overcloud-deploy/$STACK/config-download
 
 source ~/stackrc
 # -------------------------------------------------------
