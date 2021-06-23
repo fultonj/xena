@@ -1,9 +1,10 @@
 #!/bin/bash
 
-USER=0
+USER=1
 
 # GET AN INVENTORY
-STACK=other-3
+STACK=overcloud-0
+# STACK=other-3
 WORKING_DIR="$HOME/overcloud-deploy/${STACK}"
 INV="$WORKING_DIR/tripleo-ansible-inventory.yaml"
 # This inventory is a result of baremetal provisioning, see:

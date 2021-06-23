@@ -1,12 +1,14 @@
 #!/bin/bash
 
 IRONIC=1
-CEPH=0
-OVERCLOUD=0
+CEPH=1
+OVERCLOUD=1
 DOWN=0
 
-STACK=other-3
-NODE_COUNT=3
+#STACK=other-3
+#NODE_COUNT=3
+STACK=overcloud-0
+NODE_COUNT=7
 DIR=/home/stack/overcloud-deploy/$STACK/config-download
 
 source ~/stackrc
@@ -57,7 +59,6 @@ if [[ $OVERCLOUD -eq 1 ]]; then
     # --disable-container-prepare \
     
     time openstack overcloud deploy \
-         --disable-container-prepare \
          --templates ~/templates \
          --stack $STACK \
          --timeout 90 \
