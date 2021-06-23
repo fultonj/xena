@@ -38,8 +38,8 @@ fi
 ansible-playbook -i $INV \
                  -v \
                  $PLAYBOOKS/cli-deployed-ceph.yaml \
-                 -e baremetal_deployed_path="$PWD/deployed-metal-other-3.yaml" \
+                 -e baremetal_deployed_path="$PWD/deployed-metal-$STACK.yaml" \
                  -e new_ceph_spec_path="$PWD/generated_ceph_spec.yaml" \
-                 -e new_deployed_ceph_tht_path="$PWD/cephadm-overrides.yaml"
+                 -e new_deployed_ceph_tht_path="$PWD/generated_deployed_ceph.yaml"
 
 # Custom crush rules should be set manually via cephadm

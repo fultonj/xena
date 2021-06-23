@@ -133,3 +133,5 @@ init/get-pip.py
 deployed-metal-*
 deployed-network-*
 cirros-*
+generated_ceph_spec.yaml
+generated_deployed_ceph.yaml
