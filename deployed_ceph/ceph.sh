@@ -1,6 +1,8 @@
 #!/bin/bash
 
 USER=1
+CEPH=1
+CLEAN=0
 
 # GET AN INVENTORY
 STACK=overcloud-0
@@ -13,7 +15,7 @@ ROLES="/usr/share/openstack-tripleo-heat-templates/roles_data.yaml"
 PLAYBOOKS="$HOME/tripleo-ansible/tripleo_ansible/playbooks"
 
 # CREATE CEPHADM USER
-if [[ USER -eq 1 ]]; then
+if [[ $USER -eq 1 ]]; then
     # We will want to map composed $ROLES to groups based on services
     # For now we assume defaults
     #CEPHADM_PUBLIC_PRIVATE_SSH_LIST="undercloud,ceph_mon,ceph_mgr"
@@ -35,11 +37,18 @@ if [[ USER -eq 1 ]]; then
 fi
 
 # DEPLOY CEPH
-ansible-playbook -i $INV \
+if [[ $CEPH -eq 1 ]]; then
+    ansible-playbook -i $INV \
                  -v \
                  $PLAYBOOKS/cli-deployed-ceph.yaml \
                  -e baremetal_deployed_path="$PWD/deployed-metal-$STACK.yaml" \
                  -e new_ceph_spec_path="$PWD/generated_ceph_spec.yaml" \
                  -e new_deployed_ceph_tht_path="$PWD/generated_deployed_ceph.yaml"
 
-# Custom crush rules should be set manually via cephadm
+    # Custom crush rules should be set manually via cephadm
+fi
+
+# REMOVE CEPH (and try again)
+if [[ $CLEAN -eq 1 ]]; then
+    ansible-playbook -i $INV rm_ceph.yaml
+fi

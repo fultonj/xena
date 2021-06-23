@@ -1,0 +1,53 @@
+---
+- name: Remove all traces of Ceph from hosts
+  hosts: Controller,CephStorage
+  gather_facts: false
+  become: true
+  vars:
+    cluster: ceph
+  tasks:
+    - name: Get FSID
+      shell: "ls /var/lib/ceph"
+      register: fsids
+      ignore_errors: true
+    - name: Set FSID
+      set_fact:
+        fsid: "{{ fsids.stdout_lines | first }}"
+      when:
+        - fsids.stdout_lines is defined
+    - name: Get OSD devices
+      shell: "lsblk | grep -B 1 ceph | grep sd | grep -v osd | cut -c 1-3"
+      register: lsblk
+      ignore_errors: true
+    - name: Set devices
+      set_fact:
+        devices: "{{ (lsblk.stdout_lines | list)|default([]) }}"
+      when:
+        - lsblk.stdout_lines is defined
+    - name: Run dmsetup ls
+      shell: "dmsetup ls | awk {'print $1'} | grep ceph"
+      register: dmsetup_ls
+      ignore_errors: true
+    - name: Set dms
+      set_fact:
+        dms: "{{ (dmsetup_ls.stdout_lines | list)|default([]) }}"
+      when:
+        - dmsetup_ls.stdout_lines is defined
+    - name: Run cephadm rm-cluster
+      shell: "cephadm rm-cluster --force --fsid {{ fsid }}"
+    - name: dmsetup rm each item in dms
+      shell: "dmsetup remove {{ item }}"
+      loop: "{{ dms }}"
+      when:
+        - dms is defined
+        - dms | length > 0
+    - name: zap devices
+      shell: "sgdisk -Z /dev/{{ item }}"
+      loop: "{{ devices }}"
+      when:
+        - devices is defined
+        - devices | length > 0
+    - name: Recursively remove /etc/ceph
+      file:
+        path: /etc/ceph
+        state: absent
