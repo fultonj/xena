@@ -42,8 +42,12 @@ if [[ $CEPH -eq 1 ]]; then
                  -v \
                  $PLAYBOOKS/cli-deployed-ceph.yaml \
                  -e baremetal_deployed_path="$PWD/deployed-metal-$STACK.yaml" \
-                 -e new_ceph_spec_path="$PWD/generated_ceph_spec.yaml" \
-                 -e new_deployed_ceph_tht_path="$PWD/generated_deployed_ceph.yaml"
+                 -e deployed_ceph_tht_path="$PWD/generated_deployed_ceph.yaml" \
+                 -e ceph_spec_path="$PWD/generated_ceph_spec.yaml" \
+                 -e dynmaic_ceph_spec=true \
+                 -e tripleo_cephadm_container_image="daemon" \
+                 -e tripleo_cephadm_container_ns="quay.ceph.io/ceph-ci" \
+                 -e tripleo_cephadm_container_tag="latest-pacific-devel"
 
     # Custom crush rules should be set manually via cephadm
 fi
