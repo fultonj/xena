@@ -3,9 +3,10 @@
 OVERALL=1
 KEYS=0
 MDS=0
-GLANCE=1
-CINDER=1
+GLANCE=0
+CINDER=0
 NOVA=0
+RGW=0
 
 STACK=overcloud-0
 # STACK=standard-3
@@ -127,4 +128,21 @@ if [ $NOVA -eq 1 ]; then
         sleep 60
         openstack server list
     fi
+fi
+
+if [ $RGW -eq 1 ]; then
+    COUNT=5
+    echo "Creating $COUNT swift containers and observing the RGW buckets.index increment"
+    for I in $(seq 0 $COUNT); do 
+        openstack container create mydir$I
+        sleep 1
+        run_on_mon "ceph df" | egrep "POOL|index"
+    done
+    echo "Deleting the $COUNT swift containers"
+    openstack container list
+    for I in $(seq 0 $COUNT); do 
+        openstack container delete mydir$I
+    done
+    openstack container list
+    run_on_mon "ceph df" | grep index
 fi
