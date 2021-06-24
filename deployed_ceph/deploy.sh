@@ -69,7 +69,7 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          -e ~/templates/environments/low-memory-usage.yaml \
          -e ~/templates/environments/podman.yaml \
          -e ~/templates/environments/docker-ha.yaml \
-         -e ~/templates/environments/cephadm/cephadm-rbd-only.yaml \
+         -e ~/templates/environments/cephadm/cephadm.yaml \
          -r ~/oc0-role-data.yaml \
          -n ~/oc0-network-data.yaml \
          -e ~/overcloud-vips-provisioned-0.yaml \
