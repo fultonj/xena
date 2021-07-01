@@ -10,7 +10,6 @@ WORKING_DIR="$HOME/overcloud-deploy/${STACK}"
 INV="$WORKING_DIR/tripleo-ansible-inventory.yaml"
 # This inventory is a result of baremetal provisioning, see:
 #   tripleo_ansible/playbooks/cli-overcloud-node-provision.yaml
-ROLES="/usr/share/openstack-tripleo-heat-templates/roles_data.yaml"
 PLAYBOOKS="$HOME/tripleo-ansible/tripleo_ansible/playbooks"
 
 if [[ $CEPH -eq 1 ]]; then
@@ -19,14 +18,11 @@ if [[ $CEPH -eq 1 ]]; then
                  $PLAYBOOKS/cli-deployed-ceph.yaml \
                  -e baremetal_deployed_path="$PWD/deployed-metal-$STACK.yaml" \
                  -e deployed_ceph_tht_path="$PWD/generated_deployed_ceph.yaml" \
-                 -e ceph_spec_path="$PWD/generated_ceph_spec.yaml" \
                  -e dynmaic_ceph_spec=true \
                  -e tripleo_cephadm_container_image="daemon" \
                  -e tripleo_cephadm_container_ns="quay.ceph.io/ceph-ci" \
                  -e tripleo_cephadm_container_tag="latest-pacific-devel" \
-                 -e cephadm_admin_limit_file="$PWD/cephadm_admin_limit.txt" \
-                 -e cephadm_non_admin_limit_file="$PWD/cephadm_non_admin_limit.txt" \
-                 -e cephadm_enable_user_log="$PWD/cephadm_enable_user_key.log"
+                 -e working_dir="$WORKING_DIR"
 
     # Custom crush rules should be set manually via cephadm
 fi
