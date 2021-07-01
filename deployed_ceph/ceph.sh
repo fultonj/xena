@@ -23,7 +23,10 @@ if [[ $CEPH -eq 1 ]]; then
                  -e dynmaic_ceph_spec=true \
                  -e tripleo_cephadm_container_image="daemon" \
                  -e tripleo_cephadm_container_ns="quay.ceph.io/ceph-ci" \
-                 -e tripleo_cephadm_container_tag="latest-pacific-devel"
+                 -e tripleo_cephadm_container_tag="latest-pacific-devel" \
+                 -e cephadm_admin_limit_file="$PWD/cephadm_admin_limit.txt" \
+                 -e cephadm_non_admin_limit_file="$PWD/cephadm_non_admin_limit.txt" \
+                 -e cephadm_enable_user_log="$PWD/cephadm_enable_user_key.log"
 
     # Custom crush rules should be set manually via cephadm
 fi
