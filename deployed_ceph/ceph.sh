@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CEPH=1
+NEWPY=1
+PYTHON=1
+SCRIPT=0
 CLEAN=0
 
 # GET AN INVENTORY
@@ -12,13 +14,25 @@ INV="$WORKING_DIR/tripleo-ansible-inventory.yaml"
 #   tripleo_ansible/playbooks/cli-overcloud-node-provision.yaml
 PLAYBOOKS="$HOME/tripleo-ansible/tripleo_ansible/playbooks"
 
-if [[ $CEPH -eq 1 ]]; then
+if [[ $NEWPY -eq 1 ]]; then
+    ~/xena/init/python-tripleoclient.sh
+fi
+
+if [[ $PYTHON -eq 1 ]]; then
+    #openstack overcloud ceph deploy --help
+    openstack overcloud ceph deploy \
+              ~/xena/deployed_ceph/deployed-metal-$STACK.yaml \
+              -y -o ~/xena/deployed_ceph/deployed_ceph.yaml \
+              --stack $STACK
+
+fi
+
+if [[ $SCRIPT -eq 1 ]]; then
     ansible-playbook -i $INV \
                  -v \
                  $PLAYBOOKS/cli-deployed-ceph.yaml \
                  -e baremetal_deployed_path="$PWD/deployed-metal-$STACK.yaml" \
                  -e deployed_ceph_tht_path="$PWD/generated_deployed_ceph.yaml" \
-                 -e dynmaic_ceph_spec=true \
                  -e tripleo_cephadm_container_image="daemon" \
                  -e tripleo_cephadm_container_ns="quay.ceph.io/ceph-ci" \
                  -e tripleo_cephadm_container_tag="latest-pacific-devel" \
