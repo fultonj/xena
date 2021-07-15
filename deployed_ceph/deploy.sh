@@ -65,7 +65,6 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          --libvirt-type qemu \
          -e ~/templates/environments/deployed-server-deployed-neutron-ports.yaml \
          -e ~/templates/environments/net-single-nic-with-vlans.yaml \
-         -e ~/templates/environments/disable-telemetry.yaml \
          -e ~/templates/environments/low-memory-usage.yaml \
          -e ~/templates/environments/podman.yaml \
          -e ~/templates/environments/docker-ha.yaml \
