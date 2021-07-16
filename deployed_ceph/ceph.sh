@@ -20,10 +20,27 @@ fi
 
 if [[ $PYTHON -eq 1 ]]; then
     #openstack overcloud ceph deploy --help
-    openstack overcloud ceph deploy \
+    openstack overcloud ceph deploy -vvv \
               ~/xena/deployed_ceph/deployed-metal-$STACK.yaml \
               -y -o ~/xena/deployed_ceph/deployed_ceph.yaml \
+              --osd-spec ~/xena/deployed_ceph/osd_spec.yaml \
+              --container-image-prepare ~/foo.yaml \
+              --registry-url registry.redhat.io \
+              --registry-username fultonj \
+              --registry-password Sl4y3rR2lz \
               --stack $STACK
+
+    # --ceph-spec ~/xena/deployed_ceph/ceph_spec.yaml \
+    # --osd-spec ~/xena/deployed_ceph/osd_spec.yaml \
+    # --roles-data foo.yaml \
+    #
+    # --container-namespace quay.io/ceph \
+    # --container-image ceph \
+    # --container-tag latest \
+    #
+    # --registry-url registry.redhat.io \
+    # --registry-username fultonj \
+    # --registry-password Sl4y3rR2lz \
 
 fi
 
