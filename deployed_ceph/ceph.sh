@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NEWPY=1
+NEWPY=0
 PYTHON=1
 SCRIPT=0
 CLEAN=0
@@ -19,15 +19,11 @@ if [[ $NEWPY -eq 1 ]]; then
 fi
 
 if [[ $PYTHON -eq 1 ]]; then
+
     #openstack overcloud ceph deploy --help
     openstack overcloud ceph deploy -vvv \
               ~/xena/deployed_ceph/deployed-metal-$STACK.yaml \
               -y -o ~/xena/deployed_ceph/deployed_ceph.yaml \
-              --osd-spec ~/xena/deployed_ceph/osd_spec.yaml \
-              --container-image-prepare ~/foo.yaml \
-              --registry-url registry.redhat.io \
-              --registry-username fultonj \
-              --registry-password Sl4y3rR2lz \
               --stack $STACK
 
     # --ceph-spec ~/xena/deployed_ceph/ceph_spec.yaml \
