@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IRONIC=1
+IRONIC=0
 HEAT=1
 DOWN=0
 
@@ -52,6 +52,9 @@ if [[ $HEAT -eq 1 ]]; then
         fi
     fi
 
+    HEAT_POD=quay.io/tripleomaster/openstack-heat-all:current-tripleo
+    podman pull $HEAT_POD
+
     echo "Runing openstack overcloud deploy"
     # Use this as needed to speed up stack updates
     # --disable-container-prepare \
@@ -61,6 +64,9 @@ if [[ $HEAT -eq 1 ]]; then
          --stack $STACK \
          --timeout 90 \
          --libvirt-type qemu \
+         --heat-type pod --skip-heat-pull \
+         --heat-container-engine-image $HEAT_POD \
+         --heat-container-api-image $HEAT_POD \
          -e ~/templates/environments/deployed-server-deployed-neutron-ports.yaml \
          -e ~/templates/environments/net-single-nic-with-vlans.yaml \
          -e ~/templates/environments/low-memory-usage.yaml \
