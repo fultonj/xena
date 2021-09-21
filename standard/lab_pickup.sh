@@ -6,9 +6,6 @@
 STACK=overcloud-0
 
 pushd ~
-sed -i s/network\-ports/network\-config/g ~/tripleo_overcloud_node_provision.sh 
-bash ~/tripleo_overcloud_node_provision.sh
-
 sed -i \
     's|/usr/share/openstack-tripleo-heat-templates|/home/stack/templates|g' \
     overcloud-*-*-0.yaml
