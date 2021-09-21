@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IRONIC=0
+IRONIC=1
 HEAT=1
 DOWN=0
 
@@ -32,6 +32,7 @@ if [[ $IRONIC -eq 1 ]]; then
             exit 1
         fi
     fi
+    echo "Finished with baremetal"
 fi
 if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
@@ -51,11 +52,11 @@ if [[ $HEAT -eq 1 ]]; then
         fi
     fi
 
+    echo "Runing openstack overcloud deploy"
     # Use this as needed to speed up stack updates
     # --disable-container-prepare \
     
     time openstack overcloud deploy \
-         --disable-container-prepare \
          --templates ~/templates \
          --stack $STACK \
          --timeout 90 \
@@ -77,6 +78,7 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/oc0-domain.yaml \
          -e ~/xena/env_common/overrides.yaml \
          -e cephadm-overrides.yaml \
+         --skip-nodes-and-networks \
          --disable-validations --deployed-server
 
     # park ceph-ansible options here
