@@ -1,5 +1,6 @@
 #!/bin/bash
 
+NEWRPM=1
 NEWPY=0
 PYTHON=1
 SCRIPT=0
@@ -13,6 +14,11 @@ INV="$WORKING_DIR/tripleo-ansible-inventory.yaml"
 # This inventory is a result of baremetal provisioning, see:
 #   tripleo_ansible/playbooks/cli-overcloud-node-provision.yaml
 PLAYBOOKS="$HOME/tripleo-ansible/tripleo_ansible/playbooks"
+
+if [[ $NEWRPM -eq 1 ]]; then
+    RPM=https://cbs.centos.org/kojifiles/packages/cephadm/16.2.5/1.el8/noarch/cephadm-16.2.5-1.el8.noarch.rpm
+    ansible -i $INV CephStorage,Controller -b -m dnf -a "name=$RPM disable_gpg_check=yes state=present"
+fi
 
 if [[ $NEWPY -eq 1 ]]; then
     ~/xena/init/python-tripleoclient.sh
