@@ -87,7 +87,7 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
          -e ~/xena/env_common/overrides.yaml \
-         -e generated_deployed_ceph.yaml \
+         -e deployed_ceph.yaml \
          --skip-nodes-and-networks \
          --disable-validations --deployed-server
 
