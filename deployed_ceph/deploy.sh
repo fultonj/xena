@@ -2,7 +2,7 @@
 
 IRONIC=1
 CEPH=1
-OVERCLOUD=0
+OVERCLOUD=1
 DOWN=0
 
 #STACK=other-3
@@ -33,6 +33,7 @@ if [[ $IRONIC -eq 1 ]]; then
             exit 1
         fi
     fi
+    echo "Finished with baremetal"
 fi
 if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
@@ -55,6 +56,10 @@ if [[ $OVERCLOUD -eq 1 ]]; then
         fi
     fi
 
+    HEAT_POD=quay.io/tripleomaster/openstack-heat-all:current-tripleo
+    podman pull $HEAT_POD
+    echo "Runing openstack overcloud deploy"
+
     # Use this as needed to speed up stack updates
     # --disable-container-prepare \
     
@@ -63,6 +68,9 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          --stack $STACK \
          --timeout 90 \
          --libvirt-type qemu \
+         --heat-type pod --skip-heat-pull \
+         --heat-container-engine-image $HEAT_POD \
+         --heat-container-api-image $HEAT_POD \
          -e ~/templates/environments/deployed-server-deployed-neutron-ports.yaml \
          -e ~/templates/environments/net-single-nic-with-vlans.yaml \
          -e ~/templates/environments/low-memory-usage.yaml \
@@ -80,6 +88,7 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          -e ~/oc0-domain.yaml \
          -e ~/xena/env_common/overrides.yaml \
          -e generated_deployed_ceph.yaml \
+         --skip-nodes-and-networks \
          --disable-validations --deployed-server
 
 fi
