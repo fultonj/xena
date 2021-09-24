@@ -55,6 +55,10 @@ if [[ $OVERCLOUD -eq 1 ]]; then
             exit 1
         fi
     fi
+    if [[ ! -e deployed_ceph.yaml ]]; then
+        echo "deployed_ceph.yaml is missing, why didn't ceph.sh make it?"
+        exit 1
+    fi
 
     HEAT_POD=quay.io/tripleomaster/openstack-heat-all:current-tripleo
     podman pull $HEAT_POD
