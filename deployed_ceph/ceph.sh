@@ -30,6 +30,9 @@ if [[ $PYTHON -eq 1 ]]; then
     openstack overcloud ceph deploy -vvv \
               ~/xena/deployed_ceph/deployed-metal-$STACK.yaml \
               -y -o ~/xena/deployed_ceph/deployed_ceph.yaml \
+              --container-namespace quay.io/ceph \
+              --container-image daemon \
+              --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
               --stack $STACK
 
     # --ceph-spec ~/xena/deployed_ceph/ceph_spec.yaml \
@@ -37,8 +40,8 @@ if [[ $PYTHON -eq 1 ]]; then
     # --roles-data foo.yaml \
     #
     # --container-namespace quay.io/ceph \
-    # --container-image ceph \
-    # --container-tag latest \
+    # --container-image daemon \
+    # --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
     #
     # --registry-url registry.redhat.io \
     # --registry-username fultonj \
