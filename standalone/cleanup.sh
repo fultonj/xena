@@ -3,7 +3,7 @@
 echo "Tearing down Ceph environment"
 
 # Stop the Ceph service
-FSID=$(ls /var/lib/ceph/ | head -1)
+FSID=$(sudo ls /var/lib/ceph/ | head -1)
 sudo cephadm rm-cluster --force --fsid $FSID
 
 # remove ceph container image
