@@ -11,3 +11,6 @@ Standalone:
       ctlplane: ctlplane
     ctlplane_ip: 192.168.24.2
     ctlplane_cidr: 24
+allovercloud:
+  children:
+    Standalone: {}
