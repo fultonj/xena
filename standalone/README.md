@@ -7,6 +7,10 @@
 On new standalone VM run:
 - [pre.sh](pre.sh)
 - [disks.sh](disks.sh)
+- [ceph.sh](ceph.sh)
 - [deploy.sh](deploy.sh)
 - [verify.sh](verify.sh)
 - [cleanup.sh](cleanup.sh)
+
+The above is in an evolution from from having deploy.sh deploy ceph
+with the overcloud to using deployed ceph.
