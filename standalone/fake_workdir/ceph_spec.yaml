@@ -1,0 +1,33 @@
+---
+addr: 192.168.24.2
+hostname: standalone
+labels:
+- osd
+- _admin
+- mon
+- mgr
+service_type: host
+---
+placement:
+  hosts:
+  - standalone
+service_id: mon
+service_name: mon
+service_type: mon
+---
+placement:
+  hosts:
+  - standalone
+service_id: mgr
+service_name: mgr
+service_type: mgr
+---
+data_devices:
+  paths:
+    - /dev/vg2/data-lv2
+placement:
+  hosts:
+  - standalone
+service_id: default_drive_group
+service_name: osd.default_drive_group
+service_type: osd
