@@ -6,11 +6,23 @@ Standalone:
     ansible_connection: local
     ansible_host: localhost
     ansible_python_interpreter: /usr/libexec/platform-python
-    networks_all: []
-    networks_lower:
-      ctlplane: ctlplane
     ctlplane_ip: 192.168.24.2
     ctlplane_cidr: 24
+    storage_ip: 192.168.122.252
+    storage_cidr: 24
+    storage_mgmt_ip: 192.168.122.252
+    storage_mgmt_cidr: 24
+    networks_all:
+      - Storage
+      - StorageMgmt
+    networks_lower:
+      Storage: storage
+      StorageMgmt: storage_mgmt
+      ctlplane: ctlplane
+    role_networks:
+      - ctlplane
+      - StorageMgmt
+      - Storage
 allovercloud:
   children:
     Standalone: {}

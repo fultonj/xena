@@ -1,6 +1,6 @@
 ---
-addr: 192.168.24.2
-hostname: standalone
+addr: 192.168.122.252
+hostname: standalone.example.com
 labels:
 - osd
 - _admin
@@ -10,14 +10,14 @@ service_type: host
 ---
 placement:
   hosts:
-  - standalone
+  - standalone.example.com
 service_id: mon
 service_name: mon
 service_type: mon
 ---
 placement:
   hosts:
-  - standalone
+  - standalone.example.com
 service_id: mgr
 service_name: mgr
 service_type: mgr
@@ -27,7 +27,7 @@ data_devices:
     - /dev/vg2/data-lv2
 placement:
   hosts:
-  - standalone
+  - standalone.example.com
 service_id: default_drive_group
 service_name: osd.default_drive_group
 service_type: osd

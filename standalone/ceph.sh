@@ -27,9 +27,7 @@ if [ $PLAY -eq 1 ]; then
            -e tripleo_cephadm_container_ns="quay.ceph.io/ceph-ci" \
            -e tripleo_cephadm_container_tag="latest-pacific-devel" \
            -e working_dir="$PWD/fake_workdir" \
-           -e dynamic_ceph_spec="false" \
-           -e storage_network_name="ctlplane" \
-           -e storage_mgmt_network_name="ctlplane"
+           -e dynamic_ceph_spec="false"
 fi
 
 
