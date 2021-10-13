@@ -6,12 +6,17 @@ echo "Tearing down Ceph environment"
 FSID=$(sudo ls /var/lib/ceph/ | head -1)
 sudo cephadm rm-cluster --force --fsid $FSID
 
+# remove generated files
+rm -v fake_workdir/cephadm_admin_limit.txt
+rm -v fake_workdir/cephadm_enable_user_key.log
+rm -v fake_workdir/cephadm_non_admin_limit.txt
+
 # remove ceph container image
-for IMG in $(sudo podman images \
-                  --format "{{.ID}} {{.Repository}}" \
-                 | grep ceph | awk {'print $1'} ); do
-    sudo podman rmi $IMG;
-done
+# for IMG in $(sudo podman images \
+#                   --format "{{.ID}} {{.Repository}}" \
+#                  | grep ceph | awk {'print $1'} ); do
+#     sudo podman rmi $IMG;
+# done
 
 # remove ceph directories
 sudo rm -rf \
