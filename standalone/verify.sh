@@ -6,7 +6,7 @@ OVERVIEW=1
 GLANCE=1
 CINDER=1
 NOVA=1
-RGW=1
+RGW=0
 CEPH=1
 CEPHADM=1
 
@@ -29,7 +29,9 @@ if [[ $OVERVIEW -eq 1 ]]; then
 fi
 
 if [[ $GLANCE -eq 1 ]]; then
-    curl https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img -o cirros-0.4.0-x86_64-disk.img
+    if [[ ! -e cirros-0.4.0-x86_64-disk.img ]]; then
+        curl https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img -o cirros-0.4.0-x86_64-disk.img
+    fi
     openstack image create cirros --container-format bare --disk-format qcow2 --public --file cirros-0.4.0-x86_64-disk.img
     if [[ $CEPH -eq 1 ]]; then
         ceph "rbd ls -l images"
