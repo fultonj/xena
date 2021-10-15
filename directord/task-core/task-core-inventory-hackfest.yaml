@@ -1,0 +1,5 @@
+hosts:
+  overcloud0:
+    role: controller
+  overcloud1:
+    role: compute
