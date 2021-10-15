@@ -14,3 +14,4 @@ tasks:
       - tripleo_packages.init
     jobs:
       - ADD: /home/stack/task-core-hackfest.yaml /var/tmp/directord-config.yaml
+      - CACHEFILE: /var/tmp/directord-config.yaml
