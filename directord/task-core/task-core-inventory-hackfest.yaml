@@ -1,5 +1,5 @@
 hosts:
-  overcloud0:
+  overcloud0.example.com:
     role: controller
-  overcloud1:
+  overcloud1.example.com:
     role: compute
