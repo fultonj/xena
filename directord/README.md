@@ -8,14 +8,14 @@ There are my notes for the tripleo-directord-hackfest:
 
 [Optional] I make two centos-stream8 VMs on a hypervisor by running
 - [./centos.sh](https://github.com/fultonj/tripleo-laptop/blob/master/centos.sh)
-- [./clone.sh overcloud 2](https://github.com/fultonj/tripleo-laptop/blob/master/clone.sh)
+- [./clone.sh node 2](https://github.com/fultonj/tripleo-laptop/blob/master/clone.sh)
 
 I can then do the following:
 ```
-ssh stack@overcloud0
-ssh stack@overcloud1
+ssh stack@node0
+ssh stack@node1
 ```
-On overcloud0:/home/stack/ I'm keeping the contents of this git repository.
+On node0:/home/stack/ I'm keeping the contents of this git repository.
 
 ## Configure directord for two nodes
 

@@ -2,14 +2,14 @@ directord_server:
   args:
     port: 22
   targets:
-  - name: overcloud0.example.com
+  - name: node0
     host: 192.168.122.251
 
 directord_clients:
   args:
     port: 22
   targets:
-  - name: overcloud0.example.com
+  - name: node0
     host: 192.168.122.251
-  - name: overcloud1.example.com
+  - name: node1
     host: 192.168.122.250

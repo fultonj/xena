@@ -5,10 +5,10 @@ ctlplane_route: 10.98.0.1
 
 tripleo_dns_servers: ['8.8.8.8', '1.1.1.1']
 tripleo_network_ips:
-  overcloud0: 10.98.0.2
-  overcloud1: 10.98.0.3
+  node0: 10.98.0.2
+  node1: 10.98.0.3
 tripleo_controller_ips:
-  overcloud0: 10.98.0.2
+  node0: 10.98.0.2
 tripleo_cluster_addresses:
   - 10.98.0.2
 
@@ -16,11 +16,11 @@ tripleo_cluster_addresses:
 # config options
 tripleo_keepalived:
   priority:
-    overcloud0: 10
+    node0: 10
   state:
-    overcloud0: MASTER
+    node0: MASTER
   interface:
-    overcloud0: br-ex
+    node0: br-ex
   router_id: 10
   password: keepalived_pass
 
@@ -29,6 +29,6 @@ tripleo_kernel_sysctl_settings: {}
 
 tripleo_rabbitmq_cookie: 8c96e9e0cb7deec37ec24f39b35ff65d58e01ff9
 tripleo_rabbitmq_hosts:
-  - overcloud0
+  - node0
 
 tripleo_selinux_enforce: 0
