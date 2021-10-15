@@ -1,9 +1,15 @@
 #!/bin/bash
 
-SSH_CONF=0
-HOSTS=0
+GIT=1
+SSH_CONF=1
+HOSTS=1
 SSH_KEY=1
-FILES=0
+FILES=1
+
+if [ $GIT -eq 1 ]; then
+    git config --global user.email fulton@redhat.com
+    git config --global user.name "John Fulton"
+fi
 
 if [ $SSH_CONF -eq 1 ]; then
     if [[ ! -f ~/.ssh/config ]]; then
@@ -32,5 +38,4 @@ fi
 
 if [ $FILES -eq 1 ]; then
     cp -f -v directord-inventory-catalog.yaml ~/
-
 fi
