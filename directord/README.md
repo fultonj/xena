@@ -29,3 +29,7 @@ On node0:/home/stack/ I'm keeping the contents of this git repository.
 ## Configure task-core
 
 - pushd task-core; ./[install.sh](task-core/install.sh); popd
+
+## Deploy OpenStack
+
+- [deploy.sh](deploy.sh)
