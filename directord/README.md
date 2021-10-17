@@ -26,10 +26,8 @@ On node0:/home/stack/ I'm keeping the contents of this git repository.
 - `source /opt/directord/bin/activate`
 - `directord manage --list-nodes`
 
-## Configure task-core
+## Configure task-core and deploy OpenStack
 
-- pushd task-core; ./[install.sh](task-core/install.sh); popd
-
-## Deploy OpenStack
-
-- [deploy.sh](deploy.sh)
+- cd task-core
+- ./[install.sh](task-core/install.sh)
+- ./[deploy.sh](task-core/deploy.sh)
