@@ -1,0 +1,46 @@
+controller:
+  services:
+    # framework services
+    - 2node_config
+    - hostname
+    - hosts
+    - openvswitch
+    - os-net-config
+    - repos
+    - selinux
+    # other services
+    - sshd
+    - podman
+    - chronyd
+    - timezone
+    - tripleo_firewall
+    - tripleo_packages
+    - tuned
+    - ceph_pre
+    - ceph_bootstrap
+    - ceph_mon
+    - ceph_mgr
+
+compute:
+  services:
+    # framework services
+    - 2node_config
+    - hostname
+    - hosts
+    - openvswitch
+    - os-net-config
+    - repos
+    - selinux
+    # other services
+    - boot_params_service
+    - ca_certs
+    - kernel
+    - sshd
+    - podman
+    - chronyd
+    - timezone
+    - tripleo_firewall
+    - tripleo_packages
+    - tuned
+    - ceph_pre
+    - ceph_osd
