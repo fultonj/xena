@@ -3,7 +3,11 @@
 pushd ~
 sudo dnf -y install cmake make gcc gcc-c++ openssl-devel
 sudo dnf -y update libarchive
-git clone https://github.com/mwhahaha/task-core
+
+if [[ ! -d ~/task-core ]]; then
+    git clone https://github.com/mwhahaha/task-core
+fi
+
 sudo /opt/directord/bin/pip3 install task-core/
 popd
 
