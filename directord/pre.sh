@@ -2,7 +2,7 @@
 
 GIT=1
 SSH_CONF=1
-HOSTS=1
+HOSTS=0
 SSH_KEY=1
 FILES=1
 
@@ -21,6 +21,8 @@ if [ $SSH_CONF -eq 1 ]; then
 fi
 
 if [ $HOSTS -eq 1 ]; then
+    # hackfest assumes 10.x.x.x address maps to node0
+    # these lines cause trouble
     NODE0="192.168.122.251 node0"
     NODE1="192.168.122.250 node1"
     echo $NODE1 | sudo tee -a /etc/hosts
@@ -30,10 +32,10 @@ fi
 if [ $SSH_KEY -eq 1 ]; then
     rm -f ~/.ssh/id_ed25519{,.pub}
     ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
-    ssh-copy-id -i ~/.ssh/id_ed25519 node0
-    ssh-copy-id -i ~/.ssh/id_ed25519 node1
-    ssh -i ~/.ssh/id_ed25519 node0 "tail -1 ~/.ssh/authorized_keys"
-    ssh -i ~/.ssh/id_ed25519 node1 "tail -1 ~/.ssh/authorized_keys"
+    ssh-copy-id -i ~/.ssh/id_ed25519 192.168.122.251
+    ssh-copy-id -i ~/.ssh/id_ed25519 192.168.122.250
+    ssh -i ~/.ssh/id_ed25519 192.168.122.251 "tail -1 ~/.ssh/authorized_keys"
+    ssh -i ~/.ssh/id_ed25519 192.168.122.250 "tail -1 ~/.ssh/authorized_keys"
 fi
 
 if [ $FILES -eq 1 ]; then
