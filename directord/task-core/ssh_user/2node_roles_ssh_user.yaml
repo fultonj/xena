@@ -1,0 +1,27 @@
+controller:
+  services:
+    - 2node_config
+    - hostname
+    - hosts
+    - openvswitch
+    - os-net-config
+    - repos
+    - selinux
+    - tripleo_firewall
+    - tripleo_packages
+    - sshd
+    - ssh_user
+
+compute:
+  services:
+    - 2node_config
+    - hostname
+    - hosts
+    - openvswitch
+    - os-net-config
+    - repos
+    - selinux
+    - tripleo_firewall
+    - tripleo_packages
+    - sshd
+    - ssh_user
