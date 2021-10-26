@@ -44,8 +44,10 @@ run the following to figure out what went wrong:
 
 ## Write your own task-core service
 
-I'm now working a commit called "Introduce SSH User Task Core Service" in
-[my fork of task-core](https://github.com/fultonj/task-core/tree/ssh_user).
+I'm now working on my own
+[ssh_user service](https://github.com/fultonj/directord_ceph/blob/main/examples/directord/services/ssh_user.yaml])
+with its supporting [files](https://github.com/fultonj/directord_ceph/tree/main/examples/directord/services/files/ssh_user).
+
 I use the following scripts and input files to test my service in the
 environment set up by the above (even if the task-core deploy.sh script
 has not been run).
@@ -66,3 +68,6 @@ Map roles to services; include your new service on the role that needs it
 - [task-core-inventory-ssh-user.yaml](task-core/ssh_user/task-core-inventory-ssh-user.yaml)
 Map nodes to roles
 
+Future developments on this will be done under
+
+ https://github.com/fultonj/directord_ceph
