@@ -12,3 +12,7 @@ undercloud_config:
   - section: ctlplane-subnet
     option: masquerade
     value: true
+
+undercloud_hiera_override:
+  - 'ironic::drivers::ipmi::use_ipmitool_retries: true'
+  - 'ironic::drivers::ipmi::command_retry_timeout: 180'
