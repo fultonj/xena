@@ -11,7 +11,8 @@ sed -i \
     overcloud-*-*-0.yaml
 popd
 
-head -10 ~/overcloud-0-yml/network-env.yaml > ~/vip_subnet_map.yaml
+# head -10 ~/overcloud-0-yml/network-env.yaml > ~/vip_subnet_map.yaml
+cp ~/overcloud-0-yml/network-env.yaml ~/vip_subnet_map.yaml
 
 cp ~/overcloud-networks-provisioned-0.yaml deployed-network-$STACK.yaml
 cp ~/overcloud-baremetal-deployed-0.yaml deployed-metal-$STACK.yaml

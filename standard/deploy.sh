@@ -84,7 +84,6 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/oc0-domain.yaml \
          -e ~/xena/env_common/overrides.yaml \
          -e cephadm-overrides.yaml \
-         --skip-nodes-and-networks \
          --disable-validations --deployed-server
 
     # park ceph-ansible options here

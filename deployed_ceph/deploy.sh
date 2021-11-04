@@ -92,7 +92,6 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          -e ~/oc0-domain.yaml \
          -e ~/xena/env_common/overrides.yaml \
          -e deployed_ceph.yaml \
-         --skip-nodes-and-networks \
          --disable-validations --deployed-server
 
 fi
