@@ -43,7 +43,7 @@ openstack baremetal node clean $UUID --clean-steps '[{"interface": "deploy", "st
 echo "Waiting for $1 to finish cleaning..."
 i=0
 while [ 1 ]; do
-    STATE=$(openstack baremetal node show $UUID -f value -c provision_state)
+    STATE=$(openstack baremetal node show $UUID -f value -c provision_state 2> /dev/null)
     if [[ $STATE == "manageable" || $STATE == "clean failed" ]]; then
         break;
     else
