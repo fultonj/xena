@@ -2,7 +2,7 @@
 
 source ~/stackrc
 STACK=$1
-NETWORK=0
+NETWORK=1
 # ^ boolean deploy network
 
 if [[ -z $STACK ]]; then
