@@ -1,6 +1,7 @@
 #!/bin/bash
 
-IRONIC=1
+IRONIC=0
+NEW_CLIENT=1
 CEPH=1
 
 STACK=ceph-e
@@ -36,10 +37,15 @@ if [[ ! -e deployed-metal-$STACK.yaml ]]; then
 fi
 
 # -------------------------------------------------------
+if [[ $NEW_CLIENT -eq 1 ]]; then
+    bash ../init/python-tripleoclient.sh
+fi
+# -------------------------------------------------------
 if [[ $CEPH -eq 1 ]]; then
     openstack overcloud ceph deploy -vvv \
               $PWD/deployed-metal-$STACK.yaml \
               -y -o $PWD/deployed_ceph.yaml \
+              --network-data ~/oc0-network-data.yaml \
               --roles-data $PWD/ceph_roles.yaml \
               --container-namespace quay.io/ceph \
               --container-image daemon \
