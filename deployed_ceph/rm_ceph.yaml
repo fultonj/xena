@@ -1,6 +1,6 @@
 ---
 - name: Remove all traces of Ceph from hosts
-  hosts: Controller,CephStorage
+  hosts: Controller,CephStorage,CephAll
   gather_facts: false
   become: true
   vars:

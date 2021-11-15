@@ -1,11 +1,13 @@
 #!/bin/bash
 
 IRONIC=0
-NEW_CLIENT=1
-CEPH=1
+NEW_CLIENT=0
+CEPH=0
+CLEAN=1
 
 STACK=ceph-e
-NODE_COUNT=3
+WORKING_DIR="$HOME/overcloud-deploy/${STACK}"
+INV="$WORKING_DIR/tripleo-ansible-inventory.yaml"
 
 source ~/stackrc
 # -------------------------------------------------------
@@ -42,7 +44,7 @@ if [[ $NEW_CLIENT -eq 1 ]]; then
 fi
 # -------------------------------------------------------
 if [[ $CEPH -eq 1 ]]; then
-    openstack overcloud ceph deploy -vvv \
+    openstack overcloud ceph deploy \
               $PWD/deployed-metal-$STACK.yaml \
               -y -o $PWD/deployed_ceph.yaml \
               --network-data ~/oc0-network-data.yaml \
@@ -51,4 +53,10 @@ if [[ $CEPH -eq 1 ]]; then
               --container-image daemon \
               --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
               --stack $STACK
+    
+fi
+# -------------------------------------------------------
+# REMOVE CEPH (and try again)
+if [[ $CLEAN -eq 1 ]]; then
+    ansible-playbook -i $INV ../deployed_ceph/rm_ceph.yaml
 fi
