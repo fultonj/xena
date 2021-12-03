@@ -1,0 +1,26 @@
+- name: StorageCloud0
+  ipv6: false
+  mtu: 1350
+  vip: true
+  name_lower: storage_cloud_0
+  dns_domain: storagecloud0.mydomain.tld.
+  service_net_map_replace: storage
+  subnets:
+    storage_cloud_0_subnet:
+      ip_subnet: '172.16.11.0/24'
+      ipv6_subnet: 'fe80::1041:59ff:fedf:0/64'
+      allocation_pools: [{'start': '172.16.11.4', 'end': '172.16.11.250'}]
+      vlan: 11
+- name: StorageMgmtCloud0
+  ipv6: false
+  mtu: 1350
+  vip: true
+  name_lower: storage_mgmt_cloud_0
+  dns_domain: storagemgmtcloud0.mydomain.tld.
+  service_net_map_replace: storage_mgmt
+  subnets:
+    storage_mgmt_cloud_0_subnet:
+      ip_subnet: '172.16.12.0/24'
+      ipv6_subnet: 'fe80::c8b8:fdff:fe98:0/64'
+      allocation_pools: [{'start': '172.16.12.4', 'end': '172.16.12.250'}]
+      vlan: 12
