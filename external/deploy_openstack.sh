@@ -1,14 +1,16 @@
 #!/bin/bash
 
-IRONIC=0
-HEAT=1
+IRONIC=1
+HEAT=0
 DOWN=0
 
-STACK=swift
+STACK=overcloud
 NODE_COUNT=0
 DIR=/home/stack/overcloud-deploy/$STACK/config-download
 
 source ~/stackrc
+# -------------------------------------------------------
+# todo(fultonj) create external_ceph_overrides.yaml
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
 NET="../metalsmith/deployed-network-${STACK}.yaml"
@@ -58,6 +60,7 @@ if [[ $HEAT -eq 1 ]]; then
     # --disable-container-prepare \
     
     time openstack overcloud deploy \
+         --disable-container-prepare \
          --templates ~/templates \
          --stack $STACK \
          --timeout 90 \
@@ -70,6 +73,7 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/templates/environments/low-memory-usage.yaml \
          -e ~/templates/environments/podman.yaml \
          -e ~/templates/environments/docker-ha.yaml \
+         -e ~/templates/environments/external-ceph.yaml \
          -r ~/oc0-role-data.yaml \
          -n ~/oc0-network-data.yaml \
          -e ~/overcloud-vips-provisioned-0.yaml \
@@ -80,18 +84,12 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
          -e ~/xena/env_common/overrides.yaml \
+         -e external_ceph_overrides.yaml \
          --disable-validations --deployed-server
-
-    # park ceph-ansible options here
-    #     -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
-    #     -e ~/templates/environments/disable-swift.yaml \
-    #     -e ceph-ansible-overrides.yaml \
-
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then
     pushd $DIR
     bash ansible-playbook-command.sh
-    # bash ansible-playbook-command.sh --skip-tags run_ceph_ansible
     popd
 fi
