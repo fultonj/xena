@@ -3,8 +3,9 @@
 IRONIC=0
 CLEAN=0
 NEWRPM=0
-NEW_CLIENT=0
-CEPH=1
+NEW_CLIENT=1
+USER=1
+CEPH=0
 
 STACK=ceph-e
 WORKING_DIR="$HOME/overcloud-deploy/${STACK}"
@@ -53,6 +54,11 @@ if [[ $NEW_CLIENT -eq 1 ]]; then
     bash ../init/python-tripleoclient.sh
 fi
 # -------------------------------------------------------
+if [[ $USER -eq 1 ]]; then
+    #openstack overcloud ceph user disable --help
+    openstack overcloud ceph user re-enable --help
+fi
+# -------------------------------------------------------
 if [[ $CEPH -eq 1 ]]; then
     openstack overcloud ceph deploy \
               $PWD/deployed-metal-$STACK.yaml \
@@ -63,7 +69,5 @@ if [[ $CEPH -eq 1 ]]; then
               --container-image daemon \
               --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
               --stack $STACK
-
     #          --config assimilate_ceph.conf \
-    
 fi
