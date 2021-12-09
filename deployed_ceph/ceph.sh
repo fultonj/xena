@@ -1,9 +1,13 @@
 #!/bin/bash
 
-NEWRPM=1
+NEWRPM=0
 NEWPY=0
-PYTHON=1
-SCRIPT=0
+SPEC=0
+USER=0
+DEPLOY=0
+DISABLE=0
+ENABLE=0
+OLD_ANSIBLE=0
 CLEAN=0
 
 # GET AN INVENTORY
@@ -24,12 +28,27 @@ if [[ $NEWPY -eq 1 ]]; then
     ~/xena/init/python-tripleoclient.sh
 fi
 
-if [[ $PYTHON -eq 1 ]]; then
+if [[ $SPEC -eq 1 ]]; then
+    # create a ceph spec file from deployed metal
+    ansible localhost -m ceph_spec_bootstrap \
+            -a deployed_metalsmith=deployed-metal-$STACK.yaml
+    ls  -l ~/ceph_spec.yaml
+fi
 
-    #openstack overcloud ceph deploy --help
+if [[ $USER -eq 1 ]]; then
+    # create the cephadm ssh user before deploying ceph
+    openstack overcloud ceph user enable \
+              ~/ceph_spec.yaml \
+              --stack $STACK
+fi
+
+if [[ $DEPLOY -eq 1 ]]; then
+    # deploy ceph
     openstack overcloud ceph deploy -vvv \
               ~/xena/deployed_ceph/deployed-metal-$STACK.yaml \
               -y -o ~/xena/deployed_ceph/deployed_ceph.yaml \
+              --network-data ~/oc0-network-data.yaml \
+              --skip-user-create \
               --container-namespace quay.io/ceph \
               --container-image daemon \
               --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
@@ -49,7 +68,25 @@ if [[ $PYTHON -eq 1 ]]; then
 
 fi
 
-if [[ $SCRIPT -eq 1 ]]; then
+if [[ $DISABLE -eq 1 ]]; then
+    # disable the cephadm ssh user AND disable cephadm
+    openstack overcloud ceph user disable -y \
+              ~/ceph_spec.yaml \
+              --stack $STACK \
+              --fsid $FSID
+fi
+
+if [[ $ENABLE -eq 1 ]]; then
+    # re-enable the cephadm ssh user AND re-enable cephadm
+    openstack overcloud ceph user enable \
+              ~/ceph_spec.yaml \
+              --stack $STACK \
+              --fsid $FSID
+fi
+
+if [[ $OLD_ANSIBLE -eq 1 ]]; then
+    # Does some of what 'openstack overcloud ceph deploy'
+    # does but directly in ansible.
     ansible-playbook -i $INV \
                  -v \
                  $PLAYBOOKS/cli-deployed-ceph.yaml \
@@ -59,8 +96,6 @@ if [[ $SCRIPT -eq 1 ]]; then
                  -e tripleo_cephadm_container_ns="quay.ceph.io/ceph-ci" \
                  -e tripleo_cephadm_container_tag="latest-pacific-devel" \
                  -e working_dir="$WORKING_DIR"
-
-    # Custom crush rules should be set manually via cephadm
 fi
 
 # REMOVE CEPH (and try again)
