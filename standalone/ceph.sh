@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 SPEC=0
-PLAY=1
-CLI=0
+PLAY=0
+CLI=1
+KILL=0
 
 if [ $SPEC -eq 1 ]; then
     ansible localhost -m ceph_spec_bootstrap \
@@ -35,11 +36,17 @@ if [ $CLI -eq 1 ]; then
     openstack overcloud ceph deploy \
           fake_workdir/deployed_metal.yaml \
           --working-dir fake_workdir \
+          --network-data fake_workdir/network_data.yaml \
           --roles-data /usr/share/openstack-tripleo-heat-templates/roles/Standalone.yaml \
-          --osd-spec fake_workdir/osd_spec.yaml \
+          --ceph-spec fake_workdir/ceph_spec.yaml \
           --container-namespace quay.io/ceph \
           --container-image daemon \
           --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
           --stack standalone \
           -y -o deployed_ceph.yaml
+fi
+
+if [ $KILL -eq 1 ]; then
+    FSID=$(sudo cephadm ls --no-detail | jq .[].fsid | head -1 | sed s/\"//g)
+    sudo /usr/sbin/cephadm rm-cluster --force --fsid $FSID
 fi
