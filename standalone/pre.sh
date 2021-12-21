@@ -1,26 +1,14 @@
 #!/bin/bash
 
-NET=0
 POD=1
 REPO=1
 CEPH=1
 INSTALL=1
 CONTAINERS=1
-HOSTNAME=0
+HOSTNAME=1
+DNS=1
 EXTRAS=0
 TMATE=0
-
-if [[ $NET -eq 1 ]]; then
-    GW=192.168.122.1
-    ping -c 1 $GW > /dev/null
-    if [[ $? -ne 0 ]]; then
-        echo "Cannot ping $GW. Aborting."
-        exit 1
-    fi
-    if [[ $(grep $GW /etc/resolv.conf | wc -l) -eq 0 ]]; then
-        sudo sh -c "echo nameserver $GW > /etc/resolv.conf"
-    fi
-fi
 
 if [[ $POD -eq 1 ]]; then
     sudo dnf module enable -y container-tools:3.0
@@ -69,10 +57,24 @@ if [[ $CONTAINERS -eq 1 ]]; then
 fi
 
 if [[ $HOSTNAME -eq 1 ]]; then
+    OLD_HOSTNAME=$(hostname)
     sudo setenforce 0
     sudo hostnamectl set-hostname standalone.localdomain
     sudo hostnamectl set-hostname standalone.localdomain --transient
     sudo setenforce 1
+    sed -i /etc/hosts s/$OLD_HOSTNAME/standalone.localdomain/g
+fi
+
+if [[ $DNS -eq 1 ]]; then
+    GW=192.168.122.1
+    ping -c 1 $GW > /dev/null
+    if [[ $? -ne 0 ]]; then
+        echo "Cannot ping $GW. Aborting."
+        exit 1
+    fi
+    if [[ $(grep $GW /etc/resolv.conf | wc -l) -eq 0 ]]; then
+        sudo sh -c "echo nameserver $GW > /etc/resolv.conf"
+    fi
 fi
 
 if [[ $EXTRAS -eq 1 ]]; then
