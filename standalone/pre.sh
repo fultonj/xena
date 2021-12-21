@@ -57,12 +57,13 @@ if [[ $CONTAINERS -eq 1 ]]; then
 fi
 
 if [[ $HOSTNAME -eq 1 ]]; then
-    OLD_HOSTNAME=$(hostname)
     sudo setenforce 0
     sudo hostnamectl set-hostname standalone.localdomain
     sudo hostnamectl set-hostname standalone.localdomain --transient
     sudo setenforce 1
-    sed -i /etc/hosts s/$OLD_HOSTNAME/standalone.localdomain/g
+    IP=$(ip a s eth1 | grep inet | grep 192 | awk {'print $2'} | sed s/\\/24//)
+    sudo sed -i "/$IP/d" /etc/hosts
+    sudo sh -c "echo $IP standalone.localdomain standalone>> /etc/hosts"
 fi
 
 if [[ $DNS -eq 1 ]]; then
