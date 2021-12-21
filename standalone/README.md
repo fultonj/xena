@@ -22,17 +22,6 @@ I tried to switch it to a deployed ceph deployment and had mixed
 results. I think the whole thing could be made to work with some
 changes in tripleo itself. I encountered the following issues.
 
-### Authentication
-
-Though [pre.sh](pre.sh) will install the binaries for you to run
-`openstack overcloud ceph deploy` the command will fail because
-it cannot authenticate. You can't `source stackrc` as it doesn't
-exist. Maybe this command could be changed to `openstack tripleo ceph
-deploy` so it works the same was as `openstack tripleo deploy` since
-it doesn't really require authentication.
-
-**Workaround** call ansible directly as seen in [ceph.sh](ceph.sh)
-
 ### Mock Metalsmith Output
 
 Metalsmith has not been run but `openstack overcloud ceph deploy`
@@ -48,25 +37,36 @@ Note in the inventory that I also provided network files.
 The ansible module will consume the above files and produce a valid
 ceph spec as seen in [ceph.sh](ceph.sh) in the SPEC section. As per
 the issues described below I opted to then modify this file and keep
-my own version of it instead of generating it dynamically.
+my own version instead of generating it dynamically.
+
+I will look into making the deployed_metal.yaml file optional in
+cases where a ceph_spec.yaml and inventory are directly provided.
 
 ### Network
 
 TripleO standalone needs to configure the 192.168.24.0/24 network
-and interface so it doesn't exist for me to use it with deployed
-ceph. Originally I was using only the ctlplane when I ran
-[clean.sh](clean.sh) and redeployed but on a fresh deploy this creates
-a chicken/egg problem.
+and interface so it doesn't exist yet to use with deployed ceph.
+
+Any VM being deployed by standalone should have its own IP so
+I have deployed ceph use that IP, which is the following in my case 
+by setting this variable in my inventory (today):
 
 ```
-    -e storage_network_name="ctlplane"
-    -e storage_mgmt_network_name="ctlplane"
+tripleo_cephadm_first_mon_ip: 192.168.122.252
 ```
 
-**workaround**
-Because my VM already has an IP I modified the deployed_ceph deploy
-to use that IP instead and then I'll try passing it to the standalone
-deployment as if it were a separate storage network.
+I'll probably add a --first-mon-ip option to the CLI which overrides
+the same.
+
+I also pass a [network_data.yaml](fake_workdir/network_data.yaml) file
+which satisfies 
+[deployed ceph's need for a --network-data file](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/features/deployed_ceph.html#network-options)
+in order to define the tripleo-storage/ceph-public_network and 
+tripleo-storage_mgmt/ceph-cluster_network while also overriding the
+TripleO default to use the control-plane network since it does
+not yet exist. These networks are both set to 0.0.0.0/0 so that
+the ceph services listen everywhere which is sufficient for
+standalone. This also satisfies cephadm.
 
 I found that the export code did the right thing with that and I know
 my VM can reach that network.
@@ -98,41 +98,3 @@ workaround by simply removing them.
 I also deploy with
 `~/templates/environments/cephadm/cephadm-rbd-only.yaml` since the RGW
 spec application task was hanging.
-
-### Hostname
-
-cephadm would fail to apply the spec with this error:
-
-Error EINVAL: Host standalone (192.168.24.2) failed check(s): ['hostname "standalone.localdomain" does not match expected hostname "standalone"']
-
-regardless of if the spec had standalone.localdomain or standalone.
-
-```
-if 'expect_hostname' in ctx and ctx.expect_hostname:
-    if get_hostname().lower() != ctx.expect_hostname.lower():
-        errors.append('hostname "%s" does not match expected hostname "%s"' % (
-            get_hostname(), ctx.expect_hostname))
-    logger.info('Hostname "%s" matches what is expected.',
-                ctx.expect_hostname)
-```
-
-Problem was:
-- hostname is getting set to "standalone.localdomain"
-- ctx.hostname is getting set to "standalone"
-
-TripleO standalone requires you to do this:
-
-```
-sudo hostnamectl set-hostname standalone.localdomain
-sudo hostnamectl set-hostname standalone.localdomain --transient
-```
-
-If I do this then cephadm doesn't have this problem.
-
-```
-sudo hostnamectl set-hostname standalone
-sudo hostnamectl set-hostname standalone --transient
-```
-
-After ceph is deployed I then set it as required by tripleo
-standalone.
