@@ -24,8 +24,7 @@ if [[ $i -eq 0 ]]; then
     sudo lsblk
     sudo pvcreate /dev/loop3
     sudo vgcreate vg2 /dev/loop3
-    sudo lvcreate -n data-lv2 -l 1194 vg2
-    sudo lvcreate -n db-lv2 -l 597 vg2
+    sudo lvcreate -n data-lv2 -l 1791 vg2
     sudo lvs
 else
     echo "The disks are not configured as expected."
