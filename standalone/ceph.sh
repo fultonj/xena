@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 SPEC=0
-USER=1
-CLI=1
-KILL=0
+USER=0
+CEPH=1
 
 if [ $SPEC -eq 1 ]; then
     ansible localhost -m ceph_spec_bootstrap \
@@ -19,7 +18,7 @@ if [ $USER -eq 1 ]; then
               --stack standalone
 fi
 
-if [ $CLI -eq 1 ]; then
+if [ $CEPH -eq 1 ]; then
     sudo openstack overcloud ceph deploy \
           fake_workdir/deployed_metal.yaml \
           --working-dir fake_workdir \
@@ -32,15 +31,4 @@ if [ $CLI -eq 1 ]; then
           --container-tag v6.0.6-stable-6.0-pacific-centos-8-x86_64 \
           --stack standalone \
           -y -o deployed_ceph.yaml
-fi
-
-if [ $KILL -eq 1 ]; then
-    FSID=$(sudo cephadm ls --no-detail | jq .[].fsid | head -1 | sed s/\"//g)
-    sudo systemctl stop ceph-osd@*
-    sudo /usr/sbin/cephadm zap-osds --force --fsid $FSID
-    sudo /usr/sbin/cephadm rm-cluster --force --fsid $FSID
-    sudo lvremove /dev/vg2/data-lv2 --yes
-    sudo vgremove /dev/vg2 --yes
-    bash disks.sh
-    lsblk
 fi
