@@ -23,7 +23,6 @@ if [ $CEPH -eq 1 ]; then
           fake_workdir/deployed_metal.yaml \
           --working-dir fake_workdir \
           --network-data fake_workdir/network_data.yaml \
-          --roles-data /usr/share/openstack-tripleo-heat-templates/roles/Standalone.yaml \
           --ceph-spec fake_workdir/ceph_spec.yaml \
           --skip-user-create \
           --container-namespace quay.io/ceph \
