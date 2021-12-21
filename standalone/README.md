@@ -46,17 +46,12 @@ cases where a ceph_spec.yaml and inventory are directly provided.
 
 TripleO standalone needs to configure the 192.168.24.0/24 network
 and interface so it doesn't exist yet to use with deployed ceph.
-
-Any VM being deployed by standalone should have its own IP so
-I have deployed ceph use that IP, which is the following in my case 
-by setting this variable in my inventory (today):
+Instead, any VM being deployed by standalone should have its own IP
+which can be used by Ceph by passing it as in the following example:
 
 ```
-tripleo_cephadm_first_mon_ip: 192.168.122.252
+openstack overcloud ceph deploy ... --mon-ip 192.168.122.252
 ```
-
-I'll probably add a --first-mon-ip option to the CLI which overrides
-the same.
 
 I also pass a [network_data.yaml](fake_workdir/network_data.yaml) file
 which satisfies 

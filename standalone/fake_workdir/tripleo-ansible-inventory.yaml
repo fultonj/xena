@@ -6,7 +6,6 @@ Standalone:
     ansible_connection: local
     ansible_host: standalone.localdomain
     ansible_python_interpreter: /usr/libexec/platform-python
-    tripleo_cephadm_first_mon_ip: 192.168.122.252
 allovercloud:
   children:
     Standalone: {}

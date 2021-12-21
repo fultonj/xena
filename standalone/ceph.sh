@@ -3,6 +3,7 @@
 SPEC=0
 USER=0
 CEPH=1
+IP=192.168.122.252
 
 if [ $SPEC -eq 1 ]; then
     ansible localhost -m ceph_spec_bootstrap \
@@ -23,6 +24,7 @@ if [ $CEPH -eq 1 ]; then
           fake_workdir/deployed_metal.yaml \
           --working-dir fake_workdir \
           --network-data fake_workdir/network_data.yaml \
+          --mon-ip $IP \
           --ceph-spec fake_workdir/ceph_spec.yaml \
           --skip-user-create \
           --container-namespace quay.io/ceph \
