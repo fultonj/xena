@@ -51,3 +51,11 @@
       file:
         path: /etc/ceph
         state: absent
+    - name: Recursively remove /home/ceph-admin/specs
+      file:
+        path: /home/ceph-admin/specs
+        state: absent
+    - name: Remove assimilate_ceph.conf
+      file:
+        path: /home/ceph-admin/assimilate_ceph.conf
+        state: absent
