@@ -21,7 +21,6 @@ fi
 
 if [ $CEPH -eq 1 ]; then
     sudo openstack overcloud ceph deploy \
-          fake_workdir/deployed_metal.yaml \
           --working-dir fake_workdir \
           --network-data fake_workdir/network_data.yaml \
           --mon-ip $IP \
