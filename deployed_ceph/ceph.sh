@@ -18,6 +18,13 @@ INV="$WORKING_DIR/tripleo-ansible-inventory.yaml"
 # This inventory is a result of baremetal provisioning, see:
 #   tripleo_ansible/playbooks/cli-overcloud-node-provision.yaml
 PLAYBOOKS="$HOME/tripleo-ansible/tripleo_ansible/playbooks"
+CEPHADM_SSH_USER='ceph-admin'
+
+function test_orch {
+    ansible -i $INV Controller[0] -b -m shell -a "cephadm shell -- ceph orch ls; echo $?"
+    ansible -i $INV CephStorage,Controller -b -m shell -a "ls -l /home/$CEPHADM_SSH_USER/.ssh/"
+}
+
 
 if [[ $NEWRPM -eq 1 ]]; then
     RPM=https://cbs.centos.org/kojifiles/packages/cephadm/16.2.5/1.el8/noarch/cephadm-16.2.5-1.el8.noarch.rpm
@@ -39,21 +46,25 @@ if [[ $USER -eq 1 ]]; then
     # create the cephadm ssh user before deploying ceph
     openstack overcloud ceph user enable \
               ~/ceph_spec.yaml \
+              --cephadm-ssh-user $CEPHADM_SSH_USER \
               --stack $STACK
 fi
 
 if [[ $DEPLOY -eq 1 ]]; then
     # deploy ceph
-    openstack overcloud ceph deploy -vvv \
+    openstack overcloud ceph deploy \
               ~/xena/deployed_ceph/deployed-metal-$STACK.yaml \
               -y -o ~/xena/deployed_ceph/deployed_ceph.yaml \
               --network-data ~/oc0-network-data.yaml \
               --skip-user-create \
+              --cephadm-ssh-user $CEPHADM_SSH_USER \
               --container-namespace quay.io/ceph \
               --container-image daemon \
-              --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
+              --container-tag v6.0.6-stable-6.0-pacific-centos-8-x86_64 \
               --stack $STACK
 
+    # --config assimilate_ceph.conf \
+    # --skip-user-create \
     # --ceph-spec ~/xena/deployed_ceph/ceph_spec.yaml \
     # --osd-spec ~/xena/deployed_ceph/osd_spec.yaml \
     # --roles-data foo.yaml \
@@ -68,20 +79,29 @@ if [[ $DEPLOY -eq 1 ]]; then
 
 fi
 
+# get the FSID
+if [[ -e deployed_ceph.yaml ]]; then
+    FSID=$(grep CephClusterFSID deployed_ceph.yaml | awk {'print $2'})
+fi
+
 if [[ $DISABLE -eq 1 ]]; then
     # disable the cephadm ssh user AND disable cephadm
     openstack overcloud ceph user disable -y \
               ~/ceph_spec.yaml \
+              --cephadm-ssh-user $CEPHADM_SSH_USER \
               --stack $STACK \
               --fsid $FSID
+    test_orch
 fi
 
 if [[ $ENABLE -eq 1 ]]; then
     # re-enable the cephadm ssh user AND re-enable cephadm
     openstack overcloud ceph user enable \
               ~/ceph_spec.yaml \
+              --cephadm-ssh-user $CEPHADM_SSH_USER \
               --stack $STACK \
               --fsid $FSID
+    test_orch
 fi
 
 if [[ $OLD_ANSIBLE -eq 1 ]]; then
