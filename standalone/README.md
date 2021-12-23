@@ -22,27 +22,41 @@ I tried to switch it to a deployed ceph deployment and had mixed
 results. I think the whole thing could be made to work with some
 changes in tripleo itself. I encountered the following issues.
 
-### Mock Metalsmith Output
+### Mock Inputs
 
-Metalsmith has not been run but `openstack overcloud ceph deploy`
-requires a deployed_metal.yaml file. It then looks in the working
-dir for the inventory metalsmith created. I was able to trick it
-by creating my own versions of these files which we could provide.
+#### Spec not Metalsmith
 
-- [fake_workdir/deployed_metal.yaml](fake_workdir/deployed_metal.yaml)
-- [fake_workdir/tripleo-ansible-inventory.yaml](fake_workdir/tripleo-ansible-inventory.yaml)
+Metalsmith is not run with standalone but
+`openstack overcloud ceph deploy` requires a deployed_metal.yaml
+file unless we merge
+[822726](https://review.opendev.org/c/openstack/python-tripleoclient/+/822726).
+That means we need to provide a Ceph spec though. To address that we
+genereate this separately using a new command `openstack overcloud
+ceph spec`. This will also be consistent with the move to task-core
+and further decoupling. For this new command we could add a
+`--standalone` option for developers which can be run like this:
 
-Note in the inventory that I also provided network files.
+```
+openstack overcloud ceph spec \
+    --first-mon-ip 192.168.122.252 \
+    --data-devices "{'paths': ['/dev/vg2/data-lv2']}" \
+    --standalone
+```
 
-The ansible module will consume the above files and produce a valid
-ceph spec as seen in [ceph.sh](ceph.sh) in the SPEC section. As per
-the issues described below I opted to then modify this file and keep
-my own version instead of generating it dynamically.
+and would then produce something like this
+[fake_workdir/ceph_spec.yaml](fake_workdir/ceph_spec.yaml).
 
-I will look into making the deployed_metal.yaml file optional in
-cases where a ceph_spec.yaml and inventory are directly provided.
+#### Ansible
 
-### Network
+Even without the deployed_metal.yaml, `openstack overcloud ceph deploy`
+still requires an ansible inventory. We can have our users create this
+directly by providing an example which is generic enough that anyone
+can paste it directly from the documentation:
+[fake_workdir/tripleo-ansible-inventory.yaml](fake_workdir/tripleo-ansible-inventory.yaml)
+we already [require](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html#deploying-a-standalone-openstack-node)
+that the hostname be set to standalone.localdomain.
+
+#### Network
 
 TripleO standalone needs to configure the 192.168.24.0/24 network
 and interface so it doesn't exist yet to use with deployed ceph.
@@ -52,6 +66,10 @@ which can be used by Ceph by passing it as in the following example:
 ```
 openstack overcloud ceph deploy ... --mon-ip 192.168.122.252
 ```
+
+The above works because of the new
+[--mon-ip](https://review.opendev.org/c/openstack/python-tripleoclient/+/822537)
+option.
 
 I also pass a [network_data.yaml](fake_workdir/network_data.yaml) file
 which satisfies 
