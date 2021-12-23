@@ -4,7 +4,10 @@ IRONIC=0
 CLEAN=0
 NEWRPM=0
 NEW_CLIENT=0
-CEPH=0
+CEPH_ALL=0
+SPEC=1
+USER=0
+CEPH_STEP=0
 
 STACK=ceph-e
 WORKING_DIR="$HOME/overcloud-deploy/${STACK}"
@@ -53,7 +56,7 @@ if [[ $NEW_CLIENT -eq 1 ]]; then
     bash ../init/python-tripleoclient.sh
 fi
 # -------------------------------------------------------
-if [[ $CEPH -eq 1 ]]; then
+if [[ $CEPH_ALL -eq 1 ]]; then
     openstack overcloud ceph deploy \
               $PWD/deployed-metal-$STACK.yaml \
               -y -o $PWD/deployed_ceph.yaml \
@@ -61,8 +64,39 @@ if [[ $CEPH -eq 1 ]]; then
               --roles-data $PWD/ceph_roles.yaml \
               --container-namespace quay.io/ceph \
               --container-image daemon \
-              --container-tag latest-devel \
-              --config assimilate_ceph.conf \
+              --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
               --stack $STACK
-    # --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
+
+        # --config assimilate_ceph.conf \
+        # --container-tag latest-devel \
+
 fi
+# -------------------------------------------------------
+if [[ $SPEC -eq 1 ]]; then
+    openstack overcloud ceph spec \
+              $PWD/deployed-metal-$STACK.yaml \
+              --roles-data $PWD/ceph_roles.yaml \
+              --osd-spec osd_spec.yaml \
+              -y -o $PWD/ceph_spec.yaml \
+              --stack $STACK
+    ls -l $PWD/ceph_spec.yaml
+fi
+# -------------------------------------------------------
+if [[ $USER -eq 1 ]]; then
+    openstack overcloud ceph user enable \
+              --ceph-spec $PWD/ceph_spec.yaml \
+              --stack $STACK
+fi
+# -------------------------------------------------------
+if [[ $CEPH_STEP -eq 1 ]]; then
+    openstack overcloud ceph deploy \
+              --ceph-spec $PWD/ceph_spec.yaml \
+              --skip-user-create \
+              -y -o $PWD/deployed_ceph.yaml \
+              --network-data oc0-network-data.yaml \
+              --container-namespace quay.io/ceph \
+              --container-image daemon \
+              --container-tag v6.0.6-stable-6.0-pacific-centos-8-x86_64 \
+              --stack $STACK
+fi
+# -------------------------------------------------------
