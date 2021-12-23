@@ -3,9 +3,10 @@
 IRONIC=0
 CLEAN=0
 NEWRPM=0
-NEW_CLIENT=0
+NEW_CLIENT=1
 CEPH_ALL=0
-SPEC=1
+SPEC_METAL=0
+SPEC_STAND=1
 USER=0
 CEPH_STEP=0
 
@@ -64,7 +65,7 @@ if [[ $CEPH_ALL -eq 1 ]]; then
               --roles-data $PWD/ceph_roles.yaml \
               --container-namespace quay.io/ceph \
               --container-image daemon \
-              --container-tag v6.0.4-stable-6.0-pacific-centos-8-x86_64 \
+              --container-tag v6.0.6-stable-6.0-pacific-centos-8-x86_64 \
               --stack $STACK
 
         # --config assimilate_ceph.conf \
@@ -72,7 +73,7 @@ if [[ $CEPH_ALL -eq 1 ]]; then
 
 fi
 # -------------------------------------------------------
-if [[ $SPEC -eq 1 ]]; then
+if [[ $SPEC_METAL -eq 1 ]]; then
     openstack overcloud ceph spec \
               $PWD/deployed-metal-$STACK.yaml \
               --roles-data $PWD/ceph_roles.yaml \
@@ -80,6 +81,18 @@ if [[ $SPEC -eq 1 ]]; then
               -y -o $PWD/ceph_spec.yaml \
               --stack $STACK
     ls -l $PWD/ceph_spec.yaml
+    cat $PWD/ceph_spec.yaml
+fi
+# -------------------------------------------------------
+if [[ $SPEC_STAND -eq 1 ]]; then
+    openstack overcloud ceph spec \
+              --osd-spec osd_spec.yaml \
+              --mon-ip 192.168.122.252 \
+              --standalone \
+              -y -o $PWD/ceph_spec.yaml \
+              --stack $STACK
+    #ls -l $PWD/ceph_spec.yaml
+    #cat $PWD/ceph_spec.yaml
 fi
 # -------------------------------------------------------
 if [[ $USER -eq 1 ]]; then
