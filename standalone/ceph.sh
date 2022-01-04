@@ -19,8 +19,6 @@ if [ $CSPEC -eq 1 ]; then
               --mon-ip 192.168.122.252 \
               --standalone \
               -y -o $PWD/ceph_spec.yaml \
-    ls -l $PWD/ceph_spec.yaml
-    cat $PWD/ceph_spec.yaml
 fi
 
 
