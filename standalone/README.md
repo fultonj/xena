@@ -48,8 +48,9 @@ and would then produce something like this
 
 #### Ansible
 
-Even without the deployed_metal.yaml, `openstack overcloud ceph deploy`
-still requires an ansible inventory. We can have our users create this
+Even without the deployed_metal.yaml file, `openstack overcloud ceph
+deploy` still requires an ansible inventory which would normally be
+produced by metalsmith. We can have our users create this
 directly by providing an example which is generic enough that anyone
 can paste it directly from the documentation:
 [fake_workdir/tripleo-ansible-inventory.yaml](fake_workdir/tripleo-ansible-inventory.yaml)
