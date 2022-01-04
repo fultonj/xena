@@ -1,22 +1,34 @@
 #!/usr/bin/env bash
 
-SPEC=0
+ASPEC=0
+CSPEC=1
 USER=0
-CEPH=1
+CEPH=0
 IP=192.168.122.252
 
-if [ $SPEC -eq 1 ]; then
+if [ $ASPEC -eq 1 ]; then
     ansible localhost -m ceph_spec_bootstrap \
       -a "deployed_metalsmith=fake_workdir/deployed_metal.yaml \
           new_ceph_spec=fake_workdir/ceph_spec.yaml
           tripleo_roles=/usr/share/openstack-tripleo-heat-templates/roles/Standalone.yaml"
 fi
 
+if [ $CSPEC -eq 1 ]; then
+    openstack overcloud ceph spec \
+              --osd-spec osd_spec.yaml \
+              --mon-ip 192.168.122.252 \
+              --standalone \
+              -y -o $PWD/ceph_spec.yaml \
+    ls -l $PWD/ceph_spec.yaml
+    cat $PWD/ceph_spec.yaml
+fi
+
+
 if [ $USER -eq 1 ]; then
     sudo openstack overcloud ceph user enable \
-              fake_workdir/ceph_spec.yaml \
-              --working-dir fake_workdir \
-              --stack standalone
+         $PWD/ceph_spec.yaml \
+         --working-dir fake_workdir \
+         --stack standalone
 fi
 
 if [ $CEPH -eq 1 ]; then
@@ -24,7 +36,7 @@ if [ $CEPH -eq 1 ]; then
           --working-dir fake_workdir \
           --network-data fake_workdir/network_data.yaml \
           --mon-ip $IP \
-          --ceph-spec fake_workdir/ceph_spec.yaml \
+          --ceph-spec $PWD/ceph_spec.yaml \
           --skip-user-create \
           --container-namespace quay.io/ceph \
           --container-image daemon \
