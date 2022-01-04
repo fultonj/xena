@@ -16,7 +16,7 @@ fi
 if [ $CSPEC -eq 1 ]; then
     openstack overcloud ceph spec \
               --osd-spec osd_spec.yaml \
-              --mon-ip 192.168.122.252 \
+              --mon-ip $IP \
               --standalone \
               -y -o $PWD/ceph_spec.yaml \
 fi
