@@ -41,6 +41,7 @@ if [ $CEPH -eq 1 ]; then
           --network-data network_data.yaml \
           --mon-ip $IP \
           --ceph-spec ceph_spec.yaml \
+          --config initial_ceph.conf \
           --skip-user-create \
           --container-namespace quay.io/ceph \
           --container-image daemon \
