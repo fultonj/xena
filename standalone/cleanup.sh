@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CEPH=1
-STACK=0
+STACK=1
 DISK=1
 
 if [ $CEPH -eq 1 ]; then
@@ -27,6 +27,9 @@ if [ $CEPH -eq 1 ]; then
          /var/lib/ceph \
          /run/ceph \
          /etc/ceph/*
+
+    rm -fv ceph_spec.yaml
+    rm -fv deployed_ceph.yaml
 fi
 
 if [ $STACK -eq 1 ]; then
@@ -62,6 +65,8 @@ if [ $STACK -eq 1 ]; then
          /etc/systemd/system/tripleo* \
          /var/lib/mysql/*
     sudo systemctl daemon-reload
+
+    rm -fv standalone_parameters.yaml
 fi
 
 if [ $DISK -eq 1 ]; then
