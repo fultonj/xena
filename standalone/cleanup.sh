@@ -13,11 +13,6 @@ if [ $CEPH -eq 1 ]; then
     sudo /usr/sbin/cephadm zap-osds --force --fsid $FSID
     sudo /usr/sbin/cephadm rm-cluster --force --fsid $FSID
 
-    # remove generated files
-    rm -v fake_workdir/cephadm_admin_limit.txt
-    rm -v fake_workdir/cephadm_enable_user_key.log
-    rm -v fake_workdir/cephadm_non_admin_limit.txt
-
     # remove ceph container image
     # for IMG in $(sudo podman images \
         #                   --format "{{.ID}} {{.Repository}}" \
