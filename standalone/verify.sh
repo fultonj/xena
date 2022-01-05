@@ -62,7 +62,7 @@ if [[ $NOVA -eq 1 ]]; then
     PRE=1
     VM=1
     SSH=0
-    if [[ $KEYs -eq 1 ]]; then
+    if [[ $KEYS -eq 1 ]]; then
         curl --remote-name --location --insecure https://github.com/$GITHUB
         tail -1 $GITHUB > ~/.ssh/id_ed25519.pub
         openstack keypair create --public-key ~/.ssh/id_ed25519.pub default
