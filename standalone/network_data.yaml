@@ -1,6 +1,0 @@
-- name: Storage
-  name_lower: storage
-  ip_subnet: '0.0.0.0/0'
-- name: StorageMgmt
-  name_lower: storage_mgmt
-  ip_subnet: '0.0.0.0/0'

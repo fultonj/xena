@@ -29,7 +29,6 @@ fi
 if [ $CEPH -eq 1 ]; then
     sudo openstack overcloud ceph deploy \
           --working-dir . \
-          --network-data network_data.yaml \
           --mon-ip $IP \
           --ceph-spec ceph_spec.yaml \
           --config initial_ceph.conf \
