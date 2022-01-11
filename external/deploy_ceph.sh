@@ -97,8 +97,8 @@ fi
 # -------------------------------------------------------
 if [[ $USER -eq 1 ]]; then
     openstack overcloud ceph user enable \
-              --ceph-spec $PWD/ceph_spec.yaml \
-              --stack $STACK
+              --stack $STACK \
+              $PWD/ceph_spec.yaml
 fi
 # -------------------------------------------------------
 if [[ $CEPH_STEP -eq 1 ]]; then
