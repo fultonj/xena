@@ -16,7 +16,6 @@ if [ $SPEC -eq 1 ]; then
          --osd-spec osd_spec.yaml \
          --mon-ip $IP \
          -y -o ceph_spec.yaml
-    ls -l $PWD/ceph_spec.yaml
 fi
 
 if [ $USER -eq 1 ]; then
