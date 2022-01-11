@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
+FILES=1
 CEPH=1
 STACK=1
 DISK=1
+
+if [ $FILES -eq 1 ]; then
+    rm -f -v ceph_spec.yaml
+    rm -f -v deployed_ceph.yaml
+    rm -f -v cirros*
+    rm -f -v standalone_parameters.yaml
+fi
 
 if [ $CEPH -eq 1 ]; then
     echo "Tearing down Ceph environment"
@@ -27,9 +35,6 @@ if [ $CEPH -eq 1 ]; then
          /var/lib/ceph \
          /run/ceph \
          /etc/ceph/*
-
-    rm -fv ceph_spec.yaml
-    rm -fv deployed_ceph.yaml
 fi
 
 if [ $STACK -eq 1 ]; then
