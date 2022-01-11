@@ -33,18 +33,16 @@ file unless we merge
 That means we need to provide a Ceph spec though. To address that we
 genereate this separately using a new command `openstack overcloud
 ceph spec`. This will also be consistent with the move to task-core
-and further decoupling. For this new command we could add a
-`--standalone` option for developers which can be run like this:
+and further decoupling. For this new command we also add a
+`--standalone` option for developers which can be run like the
+following to produce a spec file.
 
 ```
 openstack overcloud ceph spec \
     --first-mon-ip 192.168.122.252 \
-    --data-devices "{'paths': ['/dev/vg2/data-lv2']}" \
+    --data-devices osd_spec.yaml
     --standalone
 ```
-
-and would then produce something like this
-[fake_workdir/ceph_spec.yaml](fake_workdir/ceph_spec.yaml).
 
 #### Ansible
 
@@ -53,8 +51,9 @@ deploy` still requires an ansible inventory which would normally be
 produced by metalsmith. We can have our users create this
 directly by providing an example which is generic enough that anyone
 can paste it directly from the documentation:
-[fake_workdir/tripleo-ansible-inventory.yaml](fake_workdir/tripleo-ansible-inventory.yaml)
-we already [require](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html#deploying-a-standalone-openstack-node)
+[tripleo-ansible-inventory.yaml](tripleo-ansible-inventory.yaml).
+The hostname is hardcoded in the invnetory because we already 
+[require](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html#deploying-a-standalone-openstack-node)
 that the hostname be set to standalone.localdomain.
 
 #### Network
@@ -72,7 +71,7 @@ The above works because of the new
 [--mon-ip](https://review.opendev.org/c/openstack/python-tripleoclient/+/822537)
 option.
 
-I also pass a [network_data.yaml](fake_workdir/network_data.yaml) file
+I also pass a [network_data.yaml](network_data.yaml) file
 which satisfies 
 [deployed ceph's need for a --network-data file](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/features/deployed_ceph.html#network-options)
 in order to define the tripleo-storage/ceph-public_network and 
@@ -103,12 +102,8 @@ keys:
 
 ### Hanging Tasks
 
-These tasks were hanging. I haven't looked into why. I did a quick
-workaround by simply removing them.
+I deployed with
+`~/templates/environments/cephadm/cephadm-rbd-only.yaml` 
+since the RGW spec application task was hanging.
 
-- https://github.com/openstack/tripleo-ansible/blob/master/tripleo_ansible/playbooks/cephadm.yml#L98-L101
-- https://github.com/openstack/tripleo-ansible/blob/master/tripleo_ansible/roles/tripleo_cephadm/tasks/pools.yaml#L43-L58
-
-I also deploy with
-`~/templates/environments/cephadm/cephadm-rbd-only.yaml` since the RGW
-spec application task was hanging.
+I will look into why RGW isn't working next.

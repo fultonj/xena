@@ -47,11 +47,11 @@ sudo openstack tripleo deploy \
      --control-virtual-ip $VIP \
      -r ~/templates/roles/Standalone.yaml \
      -e ~/templates/environments/standalone/standalone-tripleo.yaml \
-     -e ~/templates/environments/cephadm/cephadm-rbd-only.yaml \
-     -e cephadm_overrides.yaml \
+     -e ~/templates/environments/cephadm/cephadm.yaml \
      -e ~/containers-prepare-parameters.yaml \
      -e standalone_parameters.yaml \
      -e deployed_ceph.yaml \
+     -e cephadm_overrides.yaml \
      --output-dir $HOME \
      $@
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CEPH=1
-STACK=0
+STACK=1
 DISK=1
 
 if [ $CEPH -eq 1 ]; then
@@ -12,11 +12,6 @@ if [ $CEPH -eq 1 ]; then
     sudo systemctl stop ceph-osd@*
     sudo /usr/sbin/cephadm zap-osds --force --fsid $FSID
     sudo /usr/sbin/cephadm rm-cluster --force --fsid $FSID
-
-    # remove generated files
-    rm -v fake_workdir/cephadm_admin_limit.txt
-    rm -v fake_workdir/cephadm_enable_user_key.log
-    rm -v fake_workdir/cephadm_non_admin_limit.txt
 
     # remove ceph container image
     # for IMG in $(sudo podman images \
@@ -32,6 +27,9 @@ if [ $CEPH -eq 1 ]; then
          /var/lib/ceph \
          /run/ceph \
          /etc/ceph/*
+
+    rm -fv ceph_spec.yaml
+    rm -fv deployed_ceph.yaml
 fi
 
 if [ $STACK -eq 1 ]; then
@@ -67,6 +65,8 @@ if [ $STACK -eq 1 ]; then
          /etc/systemd/system/tripleo* \
          /var/lib/mysql/*
     sudo systemctl daemon-reload
+
+    rm -fv standalone_parameters.yaml
 fi
 
 if [ $DISK -eq 1 ]; then
