@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 CLIENT=0
-ASPEC=0
-CSPEC=1
+SPEC=1
 USER=1
 CEPH=1
 IP=192.168.122.252
@@ -11,14 +10,7 @@ if [ $CLIENT -eq 1 ]; then
     bash ../init/python-tripleoclient.sh
 fi
 
-if [ $ASPEC -eq 1 ]; then
-    ansible localhost -m ceph_spec_bootstrap \
-      -a "deployed_metalsmith=fake_workdir/deployed_metal.yaml \
-          new_ceph_spec=fake_workdir/ceph_spec.yaml
-          tripleo_roles=/usr/share/openstack-tripleo-heat-templates/roles/Standalone.yaml"
-fi
-
-if [ $CSPEC -eq 1 ]; then
+if [ $SPEC -eq 1 ]; then
     sudo openstack overcloud ceph spec \
          --standalone \
          --osd-spec osd_spec.yaml \
@@ -26,7 +18,6 @@ if [ $CSPEC -eq 1 ]; then
          -y -o ceph_spec.yaml
     ls -l $PWD/ceph_spec.yaml
 fi
-
 
 if [ $USER -eq 1 ]; then
     sudo openstack overcloud ceph user enable \
