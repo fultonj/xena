@@ -15,14 +15,13 @@ if [ $SPEC -eq 1 ]; then
          --standalone \
          --osd-spec osd_spec.yaml \
          --mon-ip $IP \
-         -y -o ceph_spec.yaml
+         -y --output ceph_spec.yaml
 fi
 
 if [ $USER -eq 1 ]; then
     sudo openstack overcloud ceph user enable \
-         ceph_spec.yaml \
          --working-dir . \
-         --stack standalone
+         ceph_spec.yaml
 fi
 
 if [ $CEPH -eq 1 ]; then
@@ -32,9 +31,5 @@ if [ $CEPH -eq 1 ]; then
           --ceph-spec ceph_spec.yaml \
           --config initial_ceph.conf \
           --skip-user-create \
-          --container-namespace quay.io/ceph \
-          --container-image daemon \
-          --container-tag v6.0.6-stable-6.0-pacific-centos-8-x86_64 \
-          --stack standalone \
-          -y -o deployed_ceph.yaml
+          -y --output deployed_ceph.yaml
 fi

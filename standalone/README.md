@@ -1,5 +1,7 @@
 # Standalone on VM from virsh
 
+## Scripts for the impatient
+
 [Optional] I make my centos-stream8 VM on a hypervisor by running
 - [./centos.sh](https://github.com/fultonj/tripleo-laptop/blob/master/centos.sh)
 - [./clone.sh standalone](https://github.com/fultonj/tripleo-laptop/blob/master/clone.sh)
@@ -12,98 +14,98 @@ On new standalone VM run:
 - [verify.sh](verify.sh)
 - [cleanup.sh](cleanup.sh)
 
-The above is in an evolution from from having deploy.sh deploy ceph
-with the overcloud to using deployed ceph.
+The above will deploy a [standalone](https://docs.openstack.org/project-deploy-guide/tripleo-docs/wallaby/deployment/standalone.html)
+node which uses [deployed ceph](https://docs.openstack.org/project-deploy-guide/tripleo-docs/wallaby/features/deployed_ceph.html). It requires the patches under the [topic ceph_spec](https://review.opendev.org/q/topic:%22ceph_spec%22+(status:open%20OR%20status:merged)).
 
-## Deployed Ceph for standalone
+## Required Files
 
-The above standalone deployment works without deployed Ceph.
-I tried to switch it to a deployed ceph deployment and had mixed
-results. I think the whole thing could be made to work with some
-changes in tripleo itself. I encountered the following issues.
+The following input files are required and generic enough that our
+documentation can have the reader copy and paste them directly.
 
-### Mock Inputs
+- [tripleo-ansible-inventory.yaml](tripleo-ansible-inventory.yaml)
+- [initial_ceph.conf](initial_ceph.conf)
+- [osd_spec.yaml](osd_spec.yaml)
 
-#### Spec not Metalsmith
+### Ansible Inventory
 
-Metalsmith is not run with standalone but
-`openstack overcloud ceph deploy` requires a deployed_metal.yaml
-file unless we merge
-[822726](https://review.opendev.org/c/openstack/python-tripleoclient/+/822726).
-That means we need to provide a Ceph spec though. To address that we
-genereate this separately using a new command `openstack overcloud
-ceph spec`. This will also be consistent with the move to task-core
-and further decoupling. For this new command we also add a
-`--standalone` option for developers which can be run like the
-following to produce a spec file.
-
-```
-openstack overcloud ceph spec \
-    --first-mon-ip 192.168.122.252 \
-    --data-devices osd_spec.yaml
-    --standalone
-```
-
-#### Ansible
-
-Even without the deployed_metal.yaml file, `openstack overcloud ceph
-deploy` still requires an ansible inventory which would normally be
-produced by metalsmith. We can have our users create this
-directly by providing an example which is generic enough that anyone
-can paste it directly from the documentation:
-[tripleo-ansible-inventory.yaml](tripleo-ansible-inventory.yaml).
-The hostname is hardcoded in the invnetory because we already 
+`openstack overcloud ceph` commands require an Ansible inventory. This
+inventory file would normally be automatically created by
+metalsmith. Since we're using standalone this file will always look
+the same: [tripleo-ansible-inventory.yaml](tripleo-ansible-inventory.yaml).
+The hostname is hardcoded in the inventory because we already 
 [require](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html#deploying-a-standalone-openstack-node)
 that the hostname be set to standalone.localdomain.
 
-#### Network
+### Initial Ceph Configuration
 
-TripleO standalone needs to configure the 192.168.24.0/24 network
-and interface so it doesn't exist yet to use with deployed ceph.
-Instead, any VM being deployed by standalone should have its own IP
-which can be used by Ceph by passing it as in the following example:
+Because we're deploying a one-node overcloud and with one disk we need
+to configure Ceph so that it doesn't expect to have its usual
+redundancy by passing an [initial_ceph.conf](initial_ceph.conf).
 
-```
-openstack overcloud ceph deploy ... --mon-ip 192.168.122.252
-```
+### OSD Spec
 
-The above works because of the new
-[--mon-ip](https://review.opendev.org/c/openstack/python-tripleoclient/+/822537)
-option.
+Because we're not using real block devices we can't use our defualt of
+using all available block devices as OSD. Thus, we create a fake block
+device with [disks.sh](disks.sh) and pass [osd_spec.yaml](osd_spec.yaml)
+when we create our ceph spec so it uses that fake block device.
 
-I also pass a [network_data.yaml](network_data.yaml) file
-which satisfies 
-[deployed ceph's need for a --network-data file](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/features/deployed_ceph.html#network-options)
-in order to define the tripleo-storage/ceph-public_network and 
-tripleo-storage_mgmt/ceph-cluster_network while also overriding the
-TripleO default to use the control-plane network since it does
-not yet exist. These networks are both set to 0.0.0.0/0 so that
-the ceph services listen everywhere which is sufficient for
-standalone. This also satisfies cephadm.
+## Deploy Ceph in three commands
 
-I found that the export code did the right thing with that and I know
-my VM can reach that network.
+Because the 192.168.24.0/24 network is not configured until `openstack
+tripleo deploy` we need to run ceph on a different network if we're
+going to deploy it first. The VM you are using probably already has an
+IP address and Ceph can be configured to use it. In my case the IP is
+192.168.122.252.
 
 ```
-[stack@standalone standalone]$ sudo cat ~/standalone-ansible-07yaec1q/cephadm/ceph_client.yml
----
-tripleo_ceph_client_fsid: fa37898b-a7ac-5d7e-865f-8a56cb2576a7
-tripleo_ceph_client_cluster: ceph
-external_cluster_mon_ips: "[v2:192.168.122.252:3300/0,v1:192.168.122.252:6789/0]"
-keys:
-- name: client.openstack
-  key: AQBpJmdhAAAAABAAG3pEbYTQo2x/eZh16lSYyA==
-  caps:
-    mgr: allow *
-    mon: profile rbd
-    osd: profile rbd pool=vms, profile rbd pool=volumes, profile rbd pool=images
-[stack@standalone standalone]$
+    export IP=192.168.122.252
 ```
 
-### Hanging Tasks
+Create a ceph spec and pass the `--standalone` option. Use the IP
+defined earlier and override the default disks to use as OSDs with 
+[osd_spec.yaml](osd_spec.yaml).
 
-I deployed with
-`~/templates/environments/cephadm/cephadm-rbd-only.yaml` 
-since the RGW spec application task was hanging.
+```
+    sudo openstack overcloud ceph spec \
+         --standalone \
+         --mon-ip $IP \
+         --osd-spec osd_spec.yaml \
+         --output ceph_spec.yaml
+```
 
-I will look into why RGW isn't working next.
+Create a user cephadm can use to SSH into the overcloud and pass the
+generated ceph spec so it knows which hosts to configure the account
+on. In a non-standalone scenario this command looks in the default
+working directory for the Ansible inventory. After metalsmith is run
+this file is created by default. In our case we have it look in the
+current directory which has our generic 
+[tripleo-ansible-inventory.yaml](tripleo-ansible-inventory.yaml)
+for standalone.
+
+```
+    sudo openstack overcloud ceph user enable \
+         --working-dir . \
+         ceph_spec.yaml \
+```
+
+Deploy Ceph passing the same working directory, IP, and ceph spec as
+above. Pass an [initial_ceph.conf](initial_ceph.conf) so that Ceph is
+configured for a single node deployment and skip the user creation
+because it was handled in the previous step. Specify what the output
+deployed Ceph file should be called.
+
+```
+    sudo openstack overcloud ceph deploy \
+          --mon-ip $IP \
+          --working-dir . \
+          --ceph-spec ceph_spec.yaml \
+          --config initial_ceph.conf \
+          --skip-user-create \
+          --output deployed_ceph.yaml
+```
+As per the [documented Deployed Ceph Container Options](https://docs.openstack.org/project-deploy-guide/tripleo-docs/wallaby/features/deployed_ceph.html#container-options),
+the Ceph container defined in `/usr/share/tripleo-common/container-images/container_image_prepare_defaults.yaml` is used by default but may be overridden.
+
+When you deploy your overcloud use `-e` to pass both the generated
+`deployed_ceph.yaml` and [cephadm_overrides.yaml](cephadm_overrides.yaml)
+as input to `openstack tripleo deploy`.
