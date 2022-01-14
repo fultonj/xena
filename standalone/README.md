@@ -19,35 +19,14 @@ node which uses [deployed ceph](https://docs.openstack.org/project-deploy-guide/
 
 ## Required Files
 
-The following input files are required and generic enough that our
-documentation can have the reader copy and paste them directly.
-
-- [tripleo-ansible-inventory.yaml](tripleo-ansible-inventory.yaml)
-- [initial_ceph.conf](initial_ceph.conf)
-- [osd_spec.yaml](osd_spec.yaml)
-
-### Ansible Inventory
-
-`openstack overcloud ceph` commands require an Ansible inventory. This
-inventory file would normally be automatically created by
-metalsmith. Since we're using standalone this file will always look
-the same: [tripleo-ansible-inventory.yaml](tripleo-ansible-inventory.yaml).
-The hostname is hardcoded in the inventory because we already 
-[require](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html#deploying-a-standalone-openstack-node)
-that the hostname be set to standalone.localdomain.
-
-### Initial Ceph Configuration
+Because we're not using real block devices we can't use our defualt of
+using all available block devices as OSDs. Thus, we create a fake block
+device with [disks.sh](disks.sh) and pass [osd_spec.yaml](osd_spec.yaml)
+when we create our ceph spec so it uses that fake block device.
 
 Because we're deploying a one-node overcloud and with one disk we need
 to configure Ceph so that it doesn't expect to have its usual
 redundancy by passing an [initial_ceph.conf](initial_ceph.conf).
-
-### OSD Spec
-
-Because we're not using real block devices we can't use our defualt of
-using all available block devices as OSD. Thus, we create a fake block
-device with [disks.sh](disks.sh) and pass [osd_spec.yaml](osd_spec.yaml)
-when we create our ceph spec so it uses that fake block device.
 
 ## Deploy Ceph in three commands
 
@@ -58,7 +37,7 @@ IP address and Ceph can be configured to use it. In my case the IP is
 192.168.122.252.
 
 ```
-    export IP=192.168.122.252
+    export CEPH_IP=192.168.122.252
 ```
 
 Create a ceph spec and pass the `--standalone` option. Use the IP
@@ -68,7 +47,7 @@ defined earlier and override the default disks to use as OSDs with
 ```
     sudo openstack overcloud ceph spec \
          --standalone \
-         --mon-ip $IP \
+         --mon-ip $CEPH_IP \
          --osd-spec osd_spec.yaml \
          --output ceph_spec.yaml
 ```
@@ -84,7 +63,7 @@ for standalone.
 
 ```
     sudo openstack overcloud ceph user enable \
-         --working-dir . \
+         --standalone \
          ceph_spec.yaml \
 ```
 
@@ -96,8 +75,8 @@ deployed Ceph file should be called.
 
 ```
     sudo openstack overcloud ceph deploy \
-          --mon-ip $IP \
-          --working-dir . \
+          --mon-ip $CEPH_IP \
+          --standalone \
           --ceph-spec ceph_spec.yaml \
           --config initial_ceph.conf \
           --skip-user-create \
@@ -106,6 +85,5 @@ deployed Ceph file should be called.
 As per the [documented Deployed Ceph Container Options](https://docs.openstack.org/project-deploy-guide/tripleo-docs/wallaby/features/deployed_ceph.html#container-options),
 the Ceph container defined in `/usr/share/tripleo-common/container-images/container_image_prepare_defaults.yaml` is used by default but may be overridden.
 
-When you deploy your overcloud use `-e` to pass both the generated
-`deployed_ceph.yaml` and [cephadm_overrides.yaml](cephadm_overrides.yaml)
-as input to `openstack tripleo deploy`.
+When you deploy your overcloud use `-e` to pass the generated
+`deployed_ceph.yaml` as input to `openstack tripleo deploy`.

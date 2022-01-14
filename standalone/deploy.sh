@@ -51,7 +51,6 @@ sudo openstack tripleo deploy \
      -e ~/containers-prepare-parameters.yaml \
      -e standalone_parameters.yaml \
      -e deployed_ceph.yaml \
-     -e cephadm_overrides.yaml \
      --output-dir $HOME \
      $@
 
