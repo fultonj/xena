@@ -68,7 +68,7 @@ fi
 
 if [[ $DNS -eq 1 ]]; then
     GW=192.168.122.1
-    ping -c 1 $GW > /dev/null
+    sudo ping -c 1 $GW > /dev/null
     if [[ $? -ne 0 ]]; then
         echo "Cannot ping $GW. Aborting."
         exit 1
