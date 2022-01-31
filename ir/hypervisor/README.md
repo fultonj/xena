@@ -5,4 +5,5 @@ deps.sh
 git-init.sh
 venv.sh
 clean_hypervisor.sh
+mkvms.sh
 ```
