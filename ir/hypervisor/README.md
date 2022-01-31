@@ -6,4 +6,5 @@ git-init.sh
 venv.sh
 clean_hypervisor.sh
 mkvms.sh
+deploy_undercloud.sh
 ```
