@@ -7,4 +7,5 @@ venv.sh
 clean_hypervisor.sh
 mkvms.sh
 deploy_undercloud.sh
+deploy_overcloud.sh
 ```
