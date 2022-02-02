@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# clean out old IR
+find ~ -name .infrared -exec rm -rf {} \;
+
 pushd ~/infrared
 source .venv/bin/activate
 infrared virsh -v \
