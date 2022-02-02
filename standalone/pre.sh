@@ -68,7 +68,8 @@ fi
 
 if [[ $DNS -eq 1 ]]; then
     GW=192.168.122.1
-    sudo ping -c 1 $GW > /dev/null
+    sudo sysctl -w net.ipv4.ping_group_range="0 1000"
+    ping -c 1 $GW > /dev/null
     if [[ $? -ne 0 ]]; then
         echo "Cannot ping $GW. Aborting."
         exit 1
