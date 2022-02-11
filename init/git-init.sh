@@ -57,7 +57,7 @@ if [ $? -gt 0 ]; then
     fi
     pip
     if [ $? -gt 0 ]; then
-        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o get-pip.py
         python3 get-pip.py
     fi
     pip install git-review tox
