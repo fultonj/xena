@@ -27,9 +27,9 @@ fi
 if [ $CEPH -eq 1 ]; then
     sudo openstack overcloud ceph deploy \
           --standalone \
+          --single-host-defaults \
           --mon-ip $CEPH_IP \
           --ceph-spec ceph_spec.yaml \
-          --config initial_ceph.conf \
           --skip-user-create \
           -y --output deployed_ceph.yaml
 fi
