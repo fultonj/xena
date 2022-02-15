@@ -1,0 +1,45 @@
+- name: Extract Ceph Info into an exeranl ceph env file
+  hosts: CephAll[0]
+  gather_facts: false
+  become: true
+  vars:
+    make_pools: false
+    pools: ['vms', 'volumes', 'images']
+    cluster: ceph
+  tasks:
+    - name: Get FSID
+      shell: "ls /var/lib/ceph"
+      register: fsids
+      ignore_errors: true
+    - name: Set FSID
+      set_fact:
+        fsid: "{{ fsids.stdout_lines | first }}"
+      when:
+        - fsids.stdout_lines is defined
+    - name: Get Mon IPs
+      shell: "grep mon_host /etc/ceph/ceph.conf | awk {'print $3'}"
+      register: ceph_conf
+      ignore_errors: true
+    - name: Set Mon IPs
+      set_fact:
+        mon_host: "{{ ceph_conf.stdout }}"
+      when:
+        - ceph_conf.stdout is defined
+    - name: Get cephx key
+      shell: "cephadm shell -- ceph auth get client.openstack | grep key | awk {'print $3'}"
+      register: cephx
+      ignore_errors: true
+    - name: Set cephx key
+      set_fact:
+        cephx_key: "{{ cephx.stdout }}"
+      when:
+        - cephx.stdout is defined
+    - name: make heat env file
+      delegate_to: localhost
+      copy:
+       dest: external_ceph_overrides.yaml
+       content: |
+         parameter_defaults:
+           CephClientKey: {{ cephx_key }}
+           CephClusterFSID: {{ fsid }}
+           CephExternalMonHost: {{ mon_host }}

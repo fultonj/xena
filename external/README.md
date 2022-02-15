@@ -26,3 +26,12 @@ roles.
 | oc0-compute-0    |    Compute
 +------------------+
 ```
+
+## Run the following after ceph is deployed
+
+```
+ceph osd pool create vms
+ceph osd pool create volumes
+ceph osd pool create images
+ceph auth add client.openstack mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
+```

@@ -5,10 +5,11 @@ CLEAN=0
 NEWRPM=0
 NEW_CLIENT=1
 CEPH_ALL=0
-SPEC_METAL=0
-SPEC_STAND=1
+SPEC_METAL=1
+SPEC_STAND=0
 USER=0
 CEPH_STEP=0
+EXTRACT=1
 
 STACK=ceph-e
 WORKING_DIR="$HOME/overcloud-deploy/${STACK}"
@@ -77,7 +78,6 @@ if [[ $SPEC_METAL -eq 1 ]]; then
     openstack overcloud ceph spec \
               $PWD/deployed-metal-$STACK.yaml \
               --roles-data $PWD/ceph_roles.yaml \
-              --osd-spec osd_spec.yaml \
               -y -o $PWD/ceph_spec.yaml \
               --stack $STACK
     ls -l $PWD/ceph_spec.yaml
@@ -107,9 +107,14 @@ if [[ $CEPH_STEP -eq 1 ]]; then
               --skip-user-create \
               -y -o $PWD/deployed_ceph.yaml \
               --network-data oc0-network-data.yaml \
-              --container-namespace quay.io/ceph \
-              --container-image daemon \
-              --container-tag v6.0.6-stable-6.0-pacific-centos-8-x86_64 \
+              --container-image-prepare ~/containers-prepare-parameter.yaml \
               --stack $STACK
+
+    # --container-namespace quay.io/ceph \
+    # --container-image daemon \
+    # --container-tag v6.0.6-stable-6.0-pacific-centos-8-x86_64 \
 fi
 # -------------------------------------------------------
+if [[ $EXTRACT -eq 1 ]]; then
+    ansible-playbook -v -i $INV extract.yaml
+fi
