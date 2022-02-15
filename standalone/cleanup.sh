@@ -3,7 +3,8 @@
 FILES=1
 CEPH=1
 STACK=1
-DISK=1
+FAKE_DISK=1
+REAL_DISK=0
 
 if [ $FILES -eq 1 ]; then
     rm -f -v ceph_spec.yaml
@@ -18,7 +19,7 @@ if [ $CEPH -eq 1 ]; then
     # Stop the Ceph service
     FSID=$(sudo ls /var/lib/ceph/ | head -1)
     sudo systemctl stop ceph-osd@*
-    sudo /usr/sbin/cephadm zap-osds --force --fsid $FSID
+    # sudo /usr/sbin/cephadm zap-osds --force --fsid $FSID
     sudo /usr/sbin/cephadm rm-cluster --force --fsid $FSID
 
     # remove ceph container image
@@ -74,9 +75,7 @@ if [ $STACK -eq 1 ]; then
     rm -fv standalone_parameters.yaml
 fi
 
-if [ $DISK -eq 1 ]; then
-    echo "Removing the disk used by Ceph"
-
+if [ $FAKE_DISK -eq 1 ]; then
     sudo lvremove --force /dev/vg2/db-lv2
     sudo lvremove --force --force /dev/vg2/data-lv2
     sudo vgremove --force --force vg2
@@ -87,4 +86,25 @@ if [ $DISK -eq 1 ]; then
 
     bash disks.sh
     lsblk
+fi
+
+if [ $REAL_DISK -eq 1 ]; then
+    sudo lvdisplay  | grep "LV PATH" | grep osd | awk {'print $3'} > /tmp/lvs
+    sudo chmod 666 /tmp/lvs
+    for LV in $(cat /tmp/lvs); do
+        sudo lvremove --yes --force --force $LV
+    done
+    sudo vgdisplay  | grep "VG NAME" | grep osd | awk {'print $3'} > /tmp/vgs
+    sudo chmod 666 /tmp/vgs
+    for VG in $(cat /tmp/vgs); do
+        sudo lvremove --yes --force --force $VG
+    done
+    sudo pvremove --yes --force --force /dev/vd{b,c,d,e,f}
+
+    sudo dmsetup ls | awk {'print $1'} | grep ceph > /tmp/dms
+    sudo chmod 666 /tmp/dms
+    for DM in $(cat /tmp/dms); do
+        sudo dmsetup remove $DM;
+    done
+    sudo sgdisk -Z /dev/vd{b,c,d,e,f}
 fi

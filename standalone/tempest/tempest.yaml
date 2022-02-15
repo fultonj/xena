@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  name: Run Tempest on Standalone
+  vars:
+    ansible_become: true
+    tempest_run: 'yes'
+    tempest_install_method: 'distro'
+    tempest_cloud_name: 'standalone'
+    tempest_workspace: "/home/stack/tempest"
+    tempest_services:
+      - neutron
+    tempest_public_net_physical_type: 'datacentre'
+    tempest_private_net_provider_type: 'geneve'
+    tempest_service_setup_host: '{{ inventory_hostname }}'
+    tempest_public_subnet_cidr: '192.168.0.0/24'
+    tempest_public_subnet_gateway_ip: '{{ tempest_public_subnet_cidr|nthhost(1) }}'
+    tempest_public_subnet_allocation_pools: '{{ tempest_public_subnet_cidr|nthhost(100) ~ "-" ~ tempest_public_subnet_cidr|nthhost(120) }}'
+    tempest_use_tempestconf: true
+    tempest_run_stackviz: false
+    tempest_tempest_conf_overrides:
+      auth.tempest_roles: "Member"
+    tempest_test_whitelist:
+      - 'tempest.api.identity.v3'
+      # - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern'
+  gather_facts: true
+  roles:
+    - os_tempest
