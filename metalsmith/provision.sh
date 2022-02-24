@@ -3,6 +3,7 @@
 source ~/stackrc
 STACK=$1
 NETWORK=1
+PROVISION_CONCURRENCY=2
 # ^ boolean deploy network
 
 if [[ -z $STACK ]]; then
@@ -47,6 +48,7 @@ if [[ ! -z $STACK && ! -z $NODE_FILE ]]; then
     openstack overcloud node provision \
               --network-config \
               --stack $STACK \
+              --concurrency $PROVISION_CONCURRENCY \
               --output $METAL_OUTPUT_FILE \
               $NODE_FILE
     if [[ -e $METAL_OUTPUT_FILE ]]; then
