@@ -3,13 +3,14 @@
 IRONIC=0
 CLEAN=0
 NEWRPM=0
-NEW_CLIENT=1
+NEW_CLIENT=0
+ANSILINK=0
 CEPH_ALL=0
-SPEC_METAL=1
+SPEC_METAL=0
 SPEC_STAND=0
 USER=0
 CEPH_STEP=0
-EXTRACT=1
+EXTRACT=0
 
 STACK=ceph-e
 WORKING_DIR="$HOME/overcloud-deploy/${STACK}"
@@ -56,6 +57,22 @@ fi
 # -------------------------------------------------------
 if [[ $NEW_CLIENT -eq 1 ]]; then
     bash ../init/python-tripleoclient.sh
+fi
+# -------------------------------------------------------
+if [[ $ANSILINK -eq 1 ]]; then
+    # link installed parts of tripleo-ansible to git copy in $HOME
+    pushd /usr/share/ansible
+    sudo mv tripleo-playbooks tripleo-playbooks.dist
+    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks tripleo-playbooks
+    sudo mv roles roles.dist
+    ln -s /home/stack/tripleo-ansible/roles
+    popd
+    pushd /usr/share/ansible/plugins
+    sudo mv module_utils module_utils.dist
+    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils
+    sudo mv modules modules.dist
+    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules
+    popd
 fi
 # -------------------------------------------------------
 if [[ $CEPH_ALL -eq 1 ]]; then
