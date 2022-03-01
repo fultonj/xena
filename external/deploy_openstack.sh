@@ -1,10 +1,10 @@
 #!/bin/bash
 
 IRONIC=1
-HEAT=0
+HEAT=1
 DOWN=0
 
-STACK=overcloud
+STACK=swift
 NODE_COUNT=0
 DIR=/home/stack/overcloud-deploy/$STACK/config-download
 
@@ -60,7 +60,6 @@ if [[ $HEAT -eq 1 ]]; then
     # --disable-container-prepare \
     
     time openstack overcloud deploy \
-         --disable-container-prepare \
          --templates ~/templates \
          --stack $STACK \
          --timeout 90 \
@@ -84,8 +83,7 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
          -e ~/xena/env_common/overrides.yaml \
-         -e external_ceph_overrides.yaml \
-         --disable-validations --deployed-server
+         -e external_ceph_overrides.yaml
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then
