@@ -61,17 +61,24 @@ fi
 # -------------------------------------------------------
 if [[ $ANSILINK -eq 1 ]]; then
     # link installed parts of tripleo-ansible to git copy in $HOME
-    pushd /usr/share/ansible
-    sudo mv tripleo-playbooks tripleo-playbooks.dist
-    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks tripleo-playbooks
-    sudo mv roles roles.dist
-    ln -s /home/stack/tripleo-ansible/roles
+    pushd /usr/share/ansible/tripleo-playbooks
+    sudo mv cli-deployed-ceph.yaml cli-deployed-ceph.yaml.dist
+    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-deployed-ceph.yaml
+    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-standalone-ceph-spec.yaml
     popd
-    pushd /usr/share/ansible/plugins
-    sudo mv module_utils module_utils.dist
-    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils
-    sudo mv modules modules.dist
-    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules
+
+    pushd /usr/share/ansible/roles
+    sudo mv tripleo_cephadm tripleo_cephadm.dist
+    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/roles/tripleo_cephadm
+    popd
+
+    pushd /usr/share/ansible/plugins/module_utils
+    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils/ceph_spec.py
+    popd
+
+    pushd /usr/share/ansible/plugins/modules
+    sudo mv ceph_spec_bootstrap.py ceph_spec_bootstrap.py.dist
+    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_spec_bootstrap.py
     popd
 fi
 # -------------------------------------------------------
@@ -108,8 +115,8 @@ if [[ $SPEC_STAND -eq 1 ]]; then
               --standalone \
               -y -o $PWD/ceph_spec.yaml \
               --stack $STACK
-    #ls -l $PWD/ceph_spec.yaml
-    #cat $PWD/ceph_spec.yaml
+    # ls -l $PWD/ceph_spec.yaml
+    # cat $PWD/ceph_spec.yaml
 fi
 # -------------------------------------------------------
 if [[ $USER -eq 1 ]]; then
