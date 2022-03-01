@@ -26,7 +26,7 @@ if [[ $# -eq 0 ]]; then
                       # 'openstack/tripleo-validations' \
                       # 'openstack/python-tripleoclient' \
 		      # 'openstack/puppet-ceph'\
-		      #'openstack/heat'\
+		      # 'openstack/heat'\
 		      # 'openstack-infra/tripleo-ci'\
 		      # 'openstack/tripleo-puppet-elements'\
 		      # 'openstack/tripleo-specs'\
@@ -34,9 +34,9 @@ if [[ $# -eq 0 ]]; then
 		      # 'openstack/tripleo-docs'\
 		      # 'openstack/tripleo-quickstart'\
 		      # 'openstack/tripleo-quickstart-extras'\
-		      #'openstack/tripleo-repos' 
-		      #'openstack/puppet-nova'\
-		      #'openstack/puppet-tripleo'\
+		      # 'openstack/tripleo-repos'\
+		      # 'openstack/puppet-nova'\
+		      # 'openstack/puppet-tripleo'\
 		      # add the next repo here
     );
 fi
@@ -57,7 +57,12 @@ if [ $? -gt 0 ]; then
     fi
     pip
     if [ $? -gt 0 ]; then
-        curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o get-pip.py
+        V=$(python3 --version | awk {'print $2'} | awk 'BEGIN { FS = "." } ; { print $2 }')
+        if [[ $V -eq "6" ]]; then
+            curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o get-pip.py
+        else
+            curl https://bootstrap.pypa.io/pip/get-pip.py -o get-pip.py
+        fi
         python3 get-pip.py
     fi
     pip install git-review tox
@@ -70,6 +75,11 @@ for repo in "${repos[@]}"; do
 	pushd $dir
 	git remote add gerrit ssh://$gerrit_user@review.openstack.org:29418/$repo.git
 	git review -s
+        if [ $? -gt 0 ]; then
+            echo "Attempting to workaround scp error"
+            cp ~/xena/workarounds/git_review/commit-msg .git/hooks/commit-msg
+            chmod u+x .git/hooks/commit-msg
+        fi
 	popd
     else
 	pushd $dir
