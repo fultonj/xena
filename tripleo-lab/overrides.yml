@@ -3,6 +3,17 @@ tripleo_repos_branch: master
 overclouds: 1
 num_osds: 4
 tripleo_overcloud_node_provision_network_ports: true
+uefi: false
+
+director_image_pkgs:
+   - rhosp-director-images-x86_64
+
+overcloud_images:
+  - file: ironic-python-agent.tar
+    content: ironic-python-agent.kernel
+  - file: overcloud-full.tar
+    content: overcloud-full.qcow2
+    # - file: overcloud-hardened-uefi-full.qcow2
 
 tripleo_repos_repos:
   - ceph
