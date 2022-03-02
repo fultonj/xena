@@ -12,8 +12,9 @@ fi
 # -------------------------------------------------------
 if [[ $1 == 'tht' ]]; then
     declare -a repos=(
-        'openstack/tripleo-heat-templates' \
+        'openstack/tripleo-heat-templates'\
         'openstack/tripleo-ansible'\
+        'openstack/python-tripleoclient'\
 	);
 fi
 # -------------------------------------------------------
@@ -97,13 +98,7 @@ if [[ $1 == 'link' ]]; then
         TARGET=/home/stack/tripleo-ansible/tripleo_ansible/roles/
         # swap out tripleo-ansible/roles/tripleo_ceph_* roles
         pushd /usr/share/ansible/roles/
-        for D in tripleo_ceph_{common,run_ansible,uuid,work_dir,client}; do
-            if [[ -d $D ]]; then
-                sudo mv -v $D $D.dist
-                sudo ln -v -s $TARGET/$D $D
-            fi
-        done
-        for D in tripleo_{run_cephadm,cephadm}; do
+        for D in tripleo_{cephadm,ceph_client,ceph_distribute_keys,run_cephadm}; do
             if [[ -d $D ]]; then
                 sudo mv -v $D $D.dist
                 sudo ln -v -s $TARGET/$D $D
