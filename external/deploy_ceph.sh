@@ -4,7 +4,6 @@ IRONIC=0
 CLEAN=0
 NEWRPM=0
 NEW_CLIENT=0
-ANSILINK=0
 CEPH_ALL=0
 SPEC_METAL=0
 SPEC_STAND=0
@@ -57,29 +56,6 @@ fi
 # -------------------------------------------------------
 if [[ $NEW_CLIENT -eq 1 ]]; then
     bash ../init/python-tripleoclient.sh
-fi
-# -------------------------------------------------------
-if [[ $ANSILINK -eq 1 ]]; then
-    # link installed parts of tripleo-ansible to git copy in $HOME
-    pushd /usr/share/ansible/tripleo-playbooks
-    sudo mv cli-deployed-ceph.yaml cli-deployed-ceph.yaml.dist
-    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-deployed-ceph.yaml
-    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-standalone-ceph-spec.yaml
-    popd
-
-    pushd /usr/share/ansible/roles
-    sudo mv tripleo_cephadm tripleo_cephadm.dist
-    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/roles/tripleo_cephadm
-    popd
-
-    pushd /usr/share/ansible/plugins/module_utils
-    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils/ceph_spec.py
-    popd
-
-    pushd /usr/share/ansible/plugins/modules
-    sudo mv ceph_spec_bootstrap.py ceph_spec_bootstrap.py.dist
-    sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_spec_bootstrap.py
-    popd
 fi
 # -------------------------------------------------------
 if [[ $CEPH_ALL -eq 1 ]]; then

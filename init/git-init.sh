@@ -94,7 +94,9 @@ if [[ $1 == 'link' ]]; then
     if [[ ! -e ~/templates ]]; then
         ln -v -s ~/tripleo-heat-templates ~/templates
     fi
+    # link tripleo-ansible ceph components
     if [[ -d ~/tripleo-ansible ]]; then
+        # ROLES
         TARGET=/home/stack/tripleo-ansible/tripleo_ansible/roles/
         # swap out tripleo-ansible/roles/tripleo_ceph_* roles
         pushd /usr/share/ansible/roles/
@@ -105,27 +107,37 @@ if [[ $1 == 'link' ]]; then
             fi
         done
         popd
-
-        # link libraries
-        pushd /usr/share/ansible/plugins/modules
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_spec_bootstrap.py
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_fs.py
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_dashboard_user.py
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_mkspec.py
-        popd
-
-        pushd /usr/share/ansible/plugins/module_utils
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils/ceph_spec.py
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils/ca_common.py
-        popd
-
+        # PLAYBOOKS
         pushd /usr/share/ansible/tripleo-playbooks/
-        sudo mv cephadm.yml cephadm.yml.dist
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cephadm.yml
-        if [[ -e ceph-admin-user-playbook.yml ]]; then
-            mv ceph-admin-user-playbook.yml ceph-admin-user-playbook.yml.dist
-        fi
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/ceph-admin-user-playbook.yml
+        for F in ceph-admin-user-disable.yml ceph-admin-user-playbook.yml cephadm.yml ceph-backup.yaml ceph_deactivate_mds.yaml cli-deployed-ceph.yaml disable_cephadm.yml; do
+            echo $F;
+            if [[ -e $F ]]; then
+                sudo mv $F $F.dist
+                sudo ln -v -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/$F
+            fi
+        done
+        popd
+        # MODULES
+        TARGET="/home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules"
+        pushd /usr/share/ansible/plugins/modules
+        for F in $(ls | grep ceph); do
+            echo $F;
+            if [[ -e $F ]]; then
+                sudo mv $F $F.dist
+                sudo ln -v -s $TARGET/$F
+            fi
+        done
+        popd
+        # MODULE UTILS
+        TARGET="/home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils"
+        pushd /usr/share/ansible/plugins/module_utils
+        for F in $(ls | grep ceph); do
+            echo $F;
+            if [[ -e $F ]]; then
+                sudo mv $F $F.dist
+                sudo ln -v -s $TARGET/$F
+            fi
+        done
         popd
     fi
 fi
