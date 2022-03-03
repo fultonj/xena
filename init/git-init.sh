@@ -90,6 +90,25 @@ for repo in "${repos[@]}"; do
 done
 popd
 # -------------------------------------------------------
+if [[ $1 == 'ntp' ]]; then
+    # The following change breaks my VMBC environment
+    #   https://github.com/openstack/tripleo-heat-templates/commit/
+    #   dfd28f7b13976a6c4f2f80cbe12c4e5476af1e0e
+    # Workaround by adding this change back
+    if [[ ! -e /home/stack/tripleo-heat-templates ]]; then
+        echo "THT is not in home dir"
+        exit 1
+    fi
+    pushd /home/stack/tripleo-heat-templates
+    F="deployment/timesync/chrony-baremetal-ansible.yaml"
+    sed -i $F -e s/'chronyc waitsync 30'/'chronyc makestep'/g
+    git diff
+    popd
+    if [[ ! -e ~/templates ]]; then
+        ln -v -s ~/tripleo-heat-templates ~/templates
+    fi
+fi
+# -------------------------------------------------------
 if [[ $1 == 'link' ]]; then
     if [[ ! -e ~/templates ]]; then
         ln -v -s ~/tripleo-heat-templates ~/templates
