@@ -11,6 +11,25 @@ if [[ -z $STACK ]]; then
     exit 1
 fi
 
+# VIPs
+VIP="$PWD/deployed-vips-${STACK}.yaml"
+if [[ ! -e $VIP ]]; then
+    echo "Creating $VIP"
+    VIP_SRC=/home/stack/overcloud-vips-provisioned-0.yaml
+    if [[ ! -e $VIP_SRC  ]]; then
+        echo "Missing VIPS file: $VIP_SRC"
+        exit 1
+    fi
+    cp $VIP_SRC $VIP
+    sed -i \
+        's|/usr/share/openstack-tripleo-heat-templates|/home/stack/templates|g' \
+        $VIP
+fi
+if [[ ! -e $VIP ]]; then
+    echo "$VIP is still missing"
+    exit 1
+fi
+
 # NETWORK
 NETWORK_OUTPUT_FILE="$PWD/deployed-network-${STACK}.yaml"
 if [[ $NETWORK -eq 1 ]]; then

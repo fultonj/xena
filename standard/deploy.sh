@@ -14,6 +14,7 @@ source ~/stackrc
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
 NET="../metalsmith/deployed-network-${STACK}.yaml"
+VIP="../metalsmith/deployed-vips-${STACK}.yaml"
 if [[ $IRONIC -eq 1 ]]; then
     if [[ ! -e $METAL ]]; then
         echo "$METAL is missing. Deploying nodes with metalsmith."
@@ -37,6 +38,7 @@ fi
 if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
     cp $NET deployed-network-$STACK.yaml
+    cp $VIP deployed-vips-$STACK.yaml
 fi
 
 # -------------------------------------------------------
@@ -55,40 +57,42 @@ if [[ $HEAT -eq 1 ]]; then
     HEAT_POD=quay.io/tripleomaster/openstack-heat-all:current-tripleo
     podman pull $HEAT_POD
 
+    #export THT=/usr/share/openstack-tripleo-heat-templates
+    export THT=/home/stack/templates/
+    
     echo "Runing openstack overcloud deploy"
     # Use this as needed to speed up stack updates
     # --disable-container-prepare \
     
     time openstack overcloud deploy \
-         --templates ~/templates \
+         --templates $THT \
          --stack $STACK \
          --timeout 90 \
          --libvirt-type qemu \
          --heat-type pod --skip-heat-pull \
          --heat-container-engine-image $HEAT_POD \
          --heat-container-api-image $HEAT_POD \
-         -e ~/templates/environments/deployed-server-deployed-neutron-ports.yaml \
-         -e ~/templates/environments/net-single-nic-with-vlans.yaml \
-         -e ~/templates/environments/low-memory-usage.yaml \
-         -e ~/templates/environments/podman.yaml \
-         -e ~/templates/environments/docker-ha.yaml \
-         -e ~/templates/environments/cephadm/cephadm.yaml \
+         -e $THT/environments/network-environment.yaml \
+         -e $THT/environments/low-memory-usage.yaml \
+         -e $THT/environments/podman.yaml \
+         -e $THT/environments/docker-ha.yaml \
+         -e $THT/environments/cephadm/cephadm.yaml \
          -r ~/oc0-role-data.yaml \
          -n ~/oc0-network-data.yaml \
-         -e ~/overcloud-vips-provisioned-0.yaml \
-         -e ~/vip_subnet_map.yaml \
-         -e deployed-network-$STACK.yaml \
-         -e deployed-metal-$STACK.yaml \
          -e ~/containers-prepare-parameter.yaml \
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
+         -e ~/overcloud-0-yml/nova-tpm.yaml \
+         -e ~/overcloud-0-yml/network-env.yaml \
          -e ~/xena/env_common/overrides.yaml \
-         -e cephadm-overrides.yaml \
-         --disable-validations --deployed-server
+         -e deployed-vips-$STACK.yaml \
+         -e deployed-network-$STACK.yaml \
+         -e deployed-metal-$STACK.yaml \
+         -e cephadm-overrides.yaml
 
     # park ceph-ansible options here
-    #     -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
-    #     -e ~/templates/environments/disable-swift.yaml \
+    #     -e $THT/environments/ceph-ansible/ceph-ansible.yaml \
+    #     -e $THT/environments/disable-swift.yaml \
     #     -e ceph-ansible-overrides.yaml \
 
 fi
