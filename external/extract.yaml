@@ -17,7 +17,7 @@
       when:
         - fsids.stdout_lines is defined
     - name: Get Mon IPs
-      shell: "grep mon_host /etc/ceph/ceph.conf | awk {'print $3'}"
+      shell: "grep mon_host /etc/ceph/ceph.conf | awk 'BEGIN { FS = \" = \" } ; { print $2 }'"
       register: ceph_conf
       ignore_errors: true
     - name: Set Mon IPs
@@ -40,6 +40,6 @@
        dest: external_ceph_overrides.yaml
        content: |
          parameter_defaults:
-           CephClientKey: {{ cephx_key }}
-           CephClusterFSID: {{ fsid }}
-           CephExternalMonHost: {{ mon_host }}
+           CephClientKey: "{{ cephx_key }}"
+           CephClusterFSID: "{{ fsid }}"
+           CephExternalMonHost: "{{ mon_host }}"
