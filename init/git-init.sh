@@ -38,6 +38,7 @@ if [[ $# -eq 0 ]]; then
 		      # 'openstack/tripleo-repos'\
 		      # 'openstack/puppet-nova'\
 		      # 'openstack/puppet-tripleo'\
+                      # 'openstack/tripleo-operator-ansible' \
 		      # add the next repo here
     );
 fi
