@@ -85,14 +85,12 @@ if [[ $SPEC_METAL -eq 1 ]]; then
 fi
 # -------------------------------------------------------
 if [[ $SPEC_STAND -eq 1 ]]; then
-    echo "Backing up inventory first"
-    cp -v $INV $INV.bak
     openstack overcloud ceph spec \
               --osd-spec osd_spec.yaml \
               --mon-ip 192.168.122.252 \
               --standalone \
               -y -o $PWD/ceph_spec.yaml \
-              --stack $STACK
+              --stack standalone
     # ls -l $PWD/ceph_spec.yaml
     # cat $PWD/ceph_spec.yaml
 fi
