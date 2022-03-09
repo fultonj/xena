@@ -6,6 +6,20 @@
   vars:
     cluster: ceph
   tasks:
+    - name: Run 'cephadm ls'
+      shell: "cephadm ls"
+      register: cephadm_ls
+    - block:
+        - name: Stop the playbook if Ceph has not been installed
+          debug:
+            msg: >-
+              'cephadm ls' indicates that there are no Ceph
+              containers running.
+        - meta: end_play
+      when:
+        - cephadm_ls is defined
+        - cephadm_ls.stdout == '[]'
+
     - name: Get FSID
       shell: "ls /var/lib/ceph"
       register: fsids
