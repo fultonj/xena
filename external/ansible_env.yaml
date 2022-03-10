@@ -1,0 +1,4 @@
+---
+openstack_bin: /usr/bin/openstack
+ansible_env:
+  HOME: /home/stack/

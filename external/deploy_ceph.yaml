@@ -1,0 +1,14 @@
+---
+- name: Deploy Ceph using tripleo-operator-ansible modules
+  gather_facts: false
+  hosts: undercloud
+  collections:
+    - tripleo.operator
+  vars:
+    foo: 33
+  tasks:
+    - name: List validations
+      include_role:
+        name: tripleo_validator_list
+    - debug:
+        msg: "{{ tripleo_validator_list_result }}"

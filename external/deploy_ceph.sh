@@ -4,6 +4,7 @@ IRONIC=0
 CLEAN=0
 NEWRPM=0
 NEW_CLIENT=0
+ANSIBLE=0
 CEPH_ALL=0
 SPEC_METAL=0
 SPEC_STAND=0
@@ -56,6 +57,29 @@ fi
 # -------------------------------------------------------
 if [[ $NEW_CLIENT -eq 1 ]]; then
     bash ../init/python-tripleoclient.sh
+fi
+# -------------------------------------------------------
+if [[ $ANSIBLE -eq 1 ]]; then
+    # Use tripleo-operator-ansible to effecively do what
+    # CEPH_ALL SPEC_METAL SPEC_STAND USER CEPH_STEP do.
+    if [[ ! -e deploy_ceph.yaml ]]; then
+        echo "deploy_ceph.yaml is missing"
+        exit 1
+    fi
+    if [[ ! -d  ~/tripleo-operator-ansible ]]; then
+        echo "~/tripleo-operator-ansible is missing"
+        exit 1
+    fi
+    # cp playbook to use relative paths in tripleo-operator-ansible
+    cp -v -f deploy_ceph.yaml ~/tripleo-operator-ansible/
+    pushd ~/tripleo-operator-ansible/
+    ansible-playbook \
+        -i $INV \
+        --module-path "~/.ansible/plugins/modules/:/usr/share/ansible/plugins/modules:~/tripleo-operator-ansible/plugins/modules/" \
+        --extra-vars @/home/stack/xena/external/ansible_env.yaml \
+        deploy_ceph.yaml
+    popd
+    rm -v -f ~/tripleo-operator-ansible/deploy_ceph.yaml
 fi
 # -------------------------------------------------------
 if [[ $CEPH_ALL -eq 1 ]]; then
