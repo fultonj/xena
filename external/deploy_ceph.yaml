@@ -5,10 +5,19 @@
   collections:
     - tripleo.operator
   vars:
-    foo: 33
+    metal: /home/stack/xena/external/deployed-metal-ceph-e.yaml
+    roles: /home/stack/xena/external/ceph_roles.yaml
+    output: /home/stack/xena/external/ceph_spec.yaml
+    stack: ceph-e
   tasks:
-    - name: List validations
+    - name: Create Ceph Spec
       include_role:
-        name: tripleo_validator_list
+        name: tripleo_ceph_spec
+      vars:
+        tripleo_ceph_spec_debug: True
+        tripleo_ceph_spec_deployed_baremetal: "{{ metal }}"
+        tripleo_ceph_spec_stack: "{{ stack }}"
+        tripleo_ceph_spec_roles_file: "{{ roles }}"
+        tripleo_ceph_spec_file: "{{ output }}"
     - debug:
-        msg: "{{ tripleo_validator_list_result }}"
+        msg: "{{ tripleo_ceph_spec_result }}"
