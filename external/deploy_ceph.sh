@@ -105,6 +105,7 @@ if [[ $CEPH_STEP -eq 1 ]]; then
     openstack overcloud ceph deploy \
               --ceph-spec $PWD/ceph_spec.yaml \
               --skip-user-create \
+              --cephadm-extra-args '--log-to-file --skip-prepare-host' \
               -y -o $PWD/deployed_ceph.yaml \
               --network-data oc0-network-data.yaml \
               --container-image-prepare ~/containers-prepare-parameter.yaml \
