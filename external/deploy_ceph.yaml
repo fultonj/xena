@@ -15,9 +15,16 @@
         name: tripleo_ceph_spec
       vars:
         tripleo_ceph_spec_debug: True
+        tripleo_ceph_spec_generate_scripts: True
+        tripleo_ceph_spec_overwrite: True
+        #tripleo_ceph_spec_standalone: False
         tripleo_ceph_spec_deployed_baremetal: "{{ metal }}"
+        #tripleo_ceph_spec_mon_ip: 192.168.122.42
         tripleo_ceph_spec_stack: "{{ stack }}"
         tripleo_ceph_spec_roles_file: "{{ roles }}"
-        tripleo_ceph_spec_file: "{{ output }}"
+        #tripleo_ceph_spec_file: "{{ output }}"
+        #tripleo_ceph_spec_working_dir: ~/overcloud-deploy/ceph-e/
     - debug:
         msg: "{{ tripleo_ceph_spec_result }}"
+    # - debug:
+    #     msg: "{{ tripleo_ceph_spec_output }}"
