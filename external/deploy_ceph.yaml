@@ -5,26 +5,70 @@
   collections:
     - tripleo.operator
   vars:
+    mkspec: false
+    user: false
+    deploy: true
     metal: /home/stack/xena/external/deployed-metal-ceph-e.yaml
     roles: /home/stack/xena/external/ceph_roles.yaml
-    output: /home/stack/xena/external/ceph_spec.yaml
+    spec: /home/stack/xena/external/ceph_spec.yaml
+    deployed_ceph_output: /home/stack/xena/external/deployed_ceph.yaml
+    network_data: /home/stack/xena/external/oc0-network-data.yaml
+    container_image_prepare: /home/stack/containers-prepare-parameter.yaml
     stack: ceph-e
   tasks:
-    - name: Create Ceph Spec
-      include_role:
-        name: tripleo_ceph_spec
-      vars:
-        tripleo_ceph_spec_debug: True
-        tripleo_ceph_spec_generate_scripts: True
-        tripleo_ceph_spec_overwrite: True
-        #tripleo_ceph_spec_standalone: False
-        tripleo_ceph_spec_deployed_baremetal: "{{ metal }}"
-        #tripleo_ceph_spec_mon_ip: 192.168.122.42
-        tripleo_ceph_spec_stack: "{{ stack }}"
-        tripleo_ceph_spec_roles_file: "{{ roles }}"
-        #tripleo_ceph_spec_file: "{{ output }}"
-        #tripleo_ceph_spec_working_dir: ~/overcloud-deploy/ceph-e/
-    - debug:
-        msg: "{{ tripleo_ceph_spec_result }}"
-    # - debug:
-    #     msg: "{{ tripleo_ceph_spec_output }}"
+    - when: mkspec
+      block:
+        - name: Create Ceph Spec
+          include_role:
+            name: tripleo_ceph_spec
+          vars:
+            tripleo_ceph_spec_debug: true
+            tripleo_ceph_spec_generate_scripts: true
+            tripleo_ceph_spec_overwrite: true
+            #tripleo_ceph_spec_standalone: true
+            #tripleo_ceph_spec_mon_ip: 192.168.122.42
+            tripleo_ceph_spec_deployed_baremetal: "{{ metal }}"
+            tripleo_ceph_spec_stack: "{{ stack }}"
+            tripleo_ceph_spec_roles_file: "{{ roles }}"
+            tripleo_ceph_spec_file: "{{ spec }}"
+            #tripleo_ceph_spec_working_dir: ~/overcloud-deploy/ceph-e/
+        - debug:
+            msg: "{{ tripleo_ceph_spec_result }}"
+    - when: user
+      block:
+        - name: Create user
+          include_role:
+            name: tripleo_ceph_user
+          vars:
+            tripleo_ceph_user_spec: "{{ spec }}"
+            tripleo_ceph_user_enable: enable
+            tripleo_ceph_user_stack: "{{ stack }}"
+            #tripleo_ceph_user_fsid: caedf9f8-cba3-4936-9773-1e4ac2e29c78
+            #tripleo_ceph_user_working_dir: ~/overcloud-deploy/ceph-e/
+            tripleo_ceph_user_debug: true
+            tripleo_ceph_user_generate_scripts: true
+            tripleo_ceph_user_generate_scripts_only: false
+            tripleo_ceph_user_standalone: false
+        - debug:
+            msg: "{{ tripleo_ceph_user_result }}"
+    - when: deploy
+      block:
+        - name: Deploy Ceph
+          include_role:
+            name: tripleo_ceph_deploy
+          vars:
+            tripleo_ceph_deploy_spec: "{{ spec }}"
+            tripleo_ceph_deploy_stack: "{{ stack }}"
+            tripleo_ceph_deploy_output: "{{ deployed_ceph_output }}"
+            tripleo_ceph_deploy_network_data: "{{ network_data }}"
+            tripleo_ceph_deploy_container_image_prepare: "{{ container_image_prepare }}"
+            tripleo_ceph_deploy_cephadm_extra_args: "--log-to-file --skip-prepare-host"
+            tripleo_ceph_deploy_overwrite: true
+            tripleo_ceph_deploy_force: true
+            tripleo_ceph_deploy_skip_user_create: true
+            tripleo_ceph_deploy_debug: true
+            tripleo_ceph_deploy_generate_scripts: true
+            tripleo_ceph_deploy_generate_scripts_only: false
+            tripleo_ceph_deploy_standalone: false
+        - debug:
+            msg: "{{ tripleo_ceph_deploy_result }}"
