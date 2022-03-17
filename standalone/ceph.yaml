@@ -5,14 +5,15 @@
   collections:
     - tripleo.operator
   vars:
-    mkspec: true
+    mkspec: false
     user: false
-    deploy: false
+    deploy: true
     spec: /home/stack/xena/standalone/ceph_spec.yaml
     osd_spec: /home/stack/xena/standalone/osd_spec.yaml
     deployed_ceph_output: /home/stack/xena/standalone/deployed_ceph.yaml
     container_image_prepare: /home/stack/containers-prepare-parameter.yaml
     stack: standalone
+    mon_ip: 192.168.122.252
   tasks:
     - when: mkspec
       block:
@@ -24,7 +25,7 @@
             tripleo_ceph_spec_generate_scripts: true
             tripleo_ceph_spec_overwrite: true
             tripleo_ceph_spec_standalone: true
-            tripleo_ceph_spec_mon_ip: 192.168.122.252
+            tripleo_ceph_spec_mon_ip: "{{ mon_ip }}"
             tripleo_ceph_spec_stack: "{{ stack }}"
             tripleo_ceph_spec_file: "{{ spec }}"
             tripleo_ceph_spec_osd_spec: "{{ osd_spec }}"
@@ -39,12 +40,10 @@
             tripleo_ceph_user_spec: "{{ spec }}"
             tripleo_ceph_user_enable: enable
             tripleo_ceph_user_stack: "{{ stack }}"
-            #tripleo_ceph_user_fsid: caedf9f8-cba3-4936-9773-1e4ac2e29c78
-            #tripleo_ceph_user_working_dir: ~/overcloud-deploy/ceph-e/
             tripleo_ceph_user_debug: true
             tripleo_ceph_user_generate_scripts: true
             tripleo_ceph_user_generate_scripts_only: false
-            tripleo_ceph_user_standalone: false
+            tripleo_ceph_user_standalone: true
         - debug:
             msg: "{{ tripleo_ceph_user_result }}"
     - when: deploy
@@ -53,18 +52,20 @@
           include_role:
             name: tripleo_ceph_deploy
           vars:
+            tripleo_ceph_user_standalone: true
+            tripleo_ceph_deploy_single_host_defaults: true
+            tripleo_ceph_deploy_skip_user_create: true
+            tripleo_ceph_deploy_skip_hosts_config: true
+            tripleo_ceph_deploy_skip_container_registry_config: true
+            tripleo_ceph_deploy_mon_ip: "{{ mon_ip }}"
             tripleo_ceph_deploy_spec: "{{ spec }}"
             tripleo_ceph_deploy_stack: "{{ stack }}"
             tripleo_ceph_deploy_output: "{{ deployed_ceph_output }}"
-            tripleo_ceph_deploy_network_data: "{{ network_data }}"
-            tripleo_ceph_deploy_container_image_prepare: "{{ container_image_prepare }}"
-            tripleo_ceph_deploy_cephadm_extra_args: "--log-to-file --skip-prepare-host"
+            #tripleo_ceph_deploy_cephadm_extra_args: "--log-to-file --skip-prepare-host"
+            #tripleo_ceph_deploy_force: true
             tripleo_ceph_deploy_overwrite: true
-            tripleo_ceph_deploy_force: true
-            tripleo_ceph_deploy_skip_user_create: true
             tripleo_ceph_deploy_debug: true
             tripleo_ceph_deploy_generate_scripts: true
             tripleo_ceph_deploy_generate_scripts_only: false
-            tripleo_ceph_deploy_standalone: false
         - debug:
             msg: "{{ tripleo_ceph_deploy_result }}"
