@@ -5,8 +5,8 @@
   collections:
     - tripleo.operator
   vars:
-    mkspec: false
-    user: false
+    mkspec: true
+    user: true
     deploy: true
     metal: /home/stack/xena/external/deployed-metal-ceph-e.yaml
     roles: /home/stack/xena/external/ceph_roles.yaml
