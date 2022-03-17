@@ -76,7 +76,7 @@ if [[ $ANSIBLE -eq 1 ]]; then
     ansible-playbook \
         -i $INV \
         --module-path "~/.ansible/plugins/modules/:/usr/share/ansible/plugins/modules:~/tripleo-operator-ansible/plugins/modules/" \
-        --extra-vars @/home/stack/xena/external/ansible_env.yaml \
+        --extra-vars '{"ansible_env": {"HOME": "/home/stack/"}}' \
         deploy_ceph.yaml
     popd
     rm -v -f ~/tripleo-operator-ansible/deploy_ceph.yaml
