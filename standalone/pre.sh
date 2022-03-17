@@ -10,14 +10,24 @@ DNS=1
 EXTRAS=0
 TMATE=0
 
+CENT9=$(grep 9 /etc/redhat-release | wc -l)
+CENT8=$(grep 8 /etc/redhat-release | wc -l)
+
 if [[ $POD -eq 1 ]]; then
-    sudo dnf module enable -y container-tools:3.0
+    if [[ $CENT8 -eq 1 ]]; then
+        sudo dnf module enable -y container-tools:3.0
+    fi
     sudo dnf install -y podman 
 fi
 
 if [[ $REPO -eq 1 ]]; then
     if [[ ! -d ~/rpms ]]; then mkdir ~/rpms; fi
-    url=https://trunk.rdoproject.org/centos8/component/tripleo/current/
+    if [[ $CENT8 -eq 1 ]]; then
+        url=https://trunk.rdoproject.org/centos8/component/tripleo/current/
+    fi
+    if [[ $CENT9 -eq 1 ]]; then
+        url=https://trunk.rdoproject.org/centos9/component/tripleo/current/
+    fi
     rpm_name=$(curl $url | grep python3-tripleo-repos | sed -e 's/<[^>]*>//g' | awk 'BEGIN { FS = ".rpm" } ; { print $1 }')
     rpm=$rpm_name.rpm
     curl -f $url/$rpm -o ~/rpms/$rpm
@@ -33,7 +43,7 @@ if [[ $REPO -eq 1 ]]; then
 fi
 
 if [[ $CEPH -eq 1 ]]; then
-    sudo dnf install -y cephadm ceph-ansible util-linux lvm2
+    sudo dnf install -y cephadm util-linux lvm2
     CEPHADMSRC=0
     if [[ $CEPHADMSRC -eq 1 ]]; then
         CEPHADM_PATH=/usr/sbin/cephadm
