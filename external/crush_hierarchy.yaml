@@ -1,0 +1,11 @@
+---
+ceph_crush_hierarchy:
+  ceph-0:
+    root: default
+    rack: r0
+  ceph-1:
+    root: default
+    rack: r1
+  ceph-2:
+    root: default
+    rack: r2
