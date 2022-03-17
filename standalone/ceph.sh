@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 CLIENT=0
-SPEC=1
-USER=1
-CEPH=1
+SPEC=0
+USER=0
+CEPH=0
+ANSIBLE=1
 CEPH_IP=192.168.122.252
 
 if [ $CLIENT -eq 1 ]; then
@@ -32,4 +33,25 @@ if [ $CEPH -eq 1 ]; then
           --ceph-spec ceph_spec.yaml \
           --skip-user-create \
           -y --output deployed_ceph.yaml
+fi
+
+if [[ $ANSIBLE -eq 1 ]]; then
+    # Use tripleo-operator-ansible to do SPEC USER CEPH
+    if [[ ! -e ceph.yaml ]]; then
+        echo "ceph.yaml is missing"
+        exit 1
+    fi
+    if [[ ! -d  ~/tripleo-operator-ansible ]]; then
+        echo "~/tripleo-operator-ansible is missing"
+        exit 1
+    fi
+    # cp playbook to use relative paths in tripleo-operator-ansible
+    cp -v -f ceph.yaml ~/tripleo-operator-ansible/
+    pushd ~/tripleo-operator-ansible/
+    ansible-playbook \
+        --module-path "~/.ansible/plugins/modules/:/usr/share/ansible/plugins/modules:~/tripleo-operator-ansible/plugins/modules/" \
+        --extra-vars '{"ansible_env": {"HOME": "/home/stack/"}}' \
+        ceph.yaml
+    popd
+    rm -v -f ~/tripleo-operator-ansible/ceph.yaml
 fi
