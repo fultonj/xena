@@ -12,6 +12,7 @@
     osd_spec: /home/stack/xena/standalone/osd_spec.yaml
     deployed_ceph_output: /home/stack/xena/standalone/deployed_ceph.yaml
     container_image_prepare: /home/stack/containers-prepare-parameter.yaml
+    initial_ceph_conf: /home/stack/xena/standalone/initial_ceph.conf
     stack: standalone
     mon_ip: 192.168.122.252
   tasks:
@@ -48,11 +49,23 @@
             msg: "{{ tripleo_ceph_user_result }}"
     - when: deploy
       block:
+        - name: Create initial ceph.conf
+          copy:
+           dest: "{{ initial_ceph_conf }}"
+           content: |
+             # passing initial conf has side effect of not
+             # setting public/cluster_networks which is good
+             # for standlone as ctlplane network is default
+             # but it is not yet configured
+             [global]
+             osd pool default size = 1
+             [mon]
+             mon_warn_on_pool_no_redundancy = false
         - name: Deploy Ceph
           include_role:
             name: tripleo_ceph_deploy
           vars:
-            tripleo_ceph_user_standalone: true
+            tripleo_ceph_deploy_standalone: true
             tripleo_ceph_deploy_single_host_defaults: true
             tripleo_ceph_deploy_skip_user_create: true
             tripleo_ceph_deploy_skip_hosts_config: true
@@ -60,9 +73,11 @@
             tripleo_ceph_deploy_mon_ip: "{{ mon_ip }}"
             tripleo_ceph_deploy_spec: "{{ spec }}"
             tripleo_ceph_deploy_stack: "{{ stack }}"
+            tripleo_ceph_deploy_config: "{{ initial_ceph_conf }}"
             tripleo_ceph_deploy_output: "{{ deployed_ceph_output }}"
-            #tripleo_ceph_deploy_cephadm_extra_args: "--log-to-file --skip-prepare-host"
-            #tripleo_ceph_deploy_force: true
+            tripleo_ceph_deploy_cephadm_extra_args: "--log-to-file --skip-prepare-host"
+            tripleo_ceph_deploy_force: true
+            tripleo_ceph_deploy_become: true
             tripleo_ceph_deploy_overwrite: true
             tripleo_ceph_deploy_debug: true
             tripleo_ceph_deploy_generate_scripts: true
