@@ -15,6 +15,7 @@ source ~/stackrc
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
 NET="../metalsmith/deployed-network-${STACK}.yaml"
+VIP="../metalsmith/deployed-vips-${STACK}.yaml"
 if [[ $IRONIC -eq 1 ]]; then
     if [[ ! -e $METAL ]]; then
         echo "$METAL is missing. Deploying nodes with metalsmith."
@@ -38,6 +39,7 @@ fi
 if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
     cp $NET deployed-network-$STACK.yaml
+    cp $VIP deployed-vips-$STACK.yaml
 fi
 # -------------------------------------------------------
 if [[ $CEPH -eq 1 ]]; then
@@ -75,24 +77,23 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          --heat-type pod --skip-heat-pull \
          --heat-container-engine-image $HEAT_POD \
          --heat-container-api-image $HEAT_POD \
-         -e ~/templates/environments/deployed-server-deployed-neutron-ports.yaml \
-         -e ~/templates/environments/net-single-nic-with-vlans.yaml \
+         -e ~/templates/environments/network-environment.yaml \
          -e ~/templates/environments/low-memory-usage.yaml \
          -e ~/templates/environments/podman.yaml \
          -e ~/templates/environments/docker-ha.yaml \
          -e ~/templates/environments/cephadm/cephadm.yaml \
          -r ~/oc0-role-data.yaml \
          -n ~/oc0-network-data.yaml \
-         -e ~/overcloud-vips-provisioned-0.yaml \
-         -e ~/vip_subnet_map.yaml \
-         -e deployed-network-$STACK.yaml \
-         -e deployed-metal-$STACK.yaml \
          -e ~/containers-prepare-parameter.yaml \
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
+         -e ~/overcloud-0-yml/nova-tpm.yaml \
+         -e ~/overcloud-0-yml/network-env.yaml \
          -e ~/xena/env_common/overrides.yaml \
-         -e deployed_ceph.yaml \
-         --disable-validations --deployed-server
+         -e deployed-vips-$STACK.yaml \
+         -e deployed-network-$STACK.yaml \
+         -e deployed-metal-$STACK.yaml \
+         -e deployed_ceph.yaml
 
 fi
 # -------------------------------------------------------
