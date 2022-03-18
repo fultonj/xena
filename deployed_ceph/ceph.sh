@@ -4,7 +4,7 @@ NEWRPM=0
 NEWPY=0
 SPEC=0
 USER=0
-DEPLOY=0
+DEPLOY=1
 DISABLE=0
 ENABLE=0
 OLD_ANSIBLE=0
@@ -56,11 +56,9 @@ if [[ $DEPLOY -eq 1 ]]; then
               ~/xena/deployed_ceph/deployed-metal-$STACK.yaml \
               -y -o ~/xena/deployed_ceph/deployed_ceph.yaml \
               --network-data ~/oc0-network-data.yaml \
-              --skip-user-create \
-              --cephadm-ssh-user $CEPHADM_SSH_USER \
-              --container-namespace quay.io/ceph \
-              --container-image daemon \
-              --container-tag v6.0.6-stable-6.0-pacific-centos-8-x86_64 \
+              --container-image-prepare ~/containers-prepare-parameter.yaml \
+              --cephadm-extra-args '--log-to-file --skip-prepare-host' \
+              --force \
               --stack $STACK
 
     # --config assimilate_ceph.conf \
