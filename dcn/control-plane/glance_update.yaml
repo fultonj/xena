@@ -1,0 +1,13 @@
+---
+parameter_defaults:
+  GlanceMultistoreConfig:
+    dcn0:
+      GlanceBackend: rbd
+      GlanceStoreDescription: 'dcn0 rbd glance store'
+      CephClientUserName: 'openstack'
+      CephClusterName: dcn0
+    dcn1:
+      GlanceBackend: rbd
+      GlanceStoreDescription: 'dcn1 rbd glance store'
+      CephClientUserName: 'openstack'
+      CephClusterName: dcn1

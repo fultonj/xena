@@ -1,0 +1,14 @@
+---
+parameter_defaults:
+  ContainerCli: podman
+  SELinuxMode: permissive
+  ConfigDebug: True
+  NtpServer: pool.ntp.org
+  CephClusterName: central
+  GlanceShowMultipleLocations: true
+  GlanceEnabledImportMethods: web-download,copy-image
+  GlanceBackend: rbd
+  GlanceStoreDescription: 'central rbd glance store'
+  GlanceBackendID: central
+  CephPoolDefaultSize: 1
+  CephPoolDefaultPgNum: 32
