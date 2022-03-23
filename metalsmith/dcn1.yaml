@@ -1,0 +1,34 @@
+---
+- name: DistributedCompute
+  count: 1
+  instances:
+    - hostname: oc0-ceph-3
+      name: oc0-ceph-3
+  defaults:
+    networks:
+      - network: ctlplane
+        vif: true
+      - network: internal_api_cloud_0
+        subnet: internal_api_cloud_0_subnet
+      - network: storage_cloud_0
+        subnet: storage_cloud_0_subnet
+      - network: tenant_cloud_0
+        subnet: tenant_cloud_0_subnet
+    network_config:
+      template: templates/single_nic_vlans/single_nic_vlans.j2
+
+- name: CephAll
+  count: 1
+  instances:
+    - hostname: oc0-ceph-4
+      name: oc0-ceph-4
+  defaults:
+    networks:
+      - network: ctlplane
+        vif: true
+      - network: storage_cloud_0
+        subnet: storage_cloud_0_subnet
+      - network: storage_mgmt_cloud_0
+        subnet: storage_mgmt_cloud_0_subnet
+    network_config:
+      template: templates/single_nic_vlans/single_nic_vlans.j2

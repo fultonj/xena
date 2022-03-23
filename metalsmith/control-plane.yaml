@@ -1,0 +1,48 @@
+---
+- name: Controller
+  count: 3
+  instances:
+    - hostname: oc0-controller-0
+      name: oc0-controller-0
+    - hostname: oc0-controller-1
+      name: oc0-controller-1
+    - hostname: oc0-controller-2
+      name: oc0-controller-2
+  defaults:
+    networks:
+      - network: ctlplane
+        vif: true
+      - network: external_cloud_0
+        subnet: external_cloud_0_subnet
+      - network: internal_api_cloud_0
+        subnet: internal_api_cloud_0_subnet
+      - network: storage_cloud_0
+        subnet: storage_cloud_0_subnet
+      - network: storage_mgmt_cloud_0
+        subnet: storage_mgmt_cloud_0_subnet
+      - network: tenant_cloud_0
+        subnet: tenant_cloud_0_subnet
+    network_config:
+      template: templates/single_nic_vlans/single_nic_vlans.j2
+      default_route_network:
+        - external_cloud_0
+
+- name: ComputeHCI
+  count: 1
+  instances:
+    - hostname: oc0-ceph-0
+      name: oc0-ceph-0
+  defaults:
+    networks:
+      - network: ctlplane
+        vif: true
+      - network: internal_api_cloud_0
+        subnet: internal_api_cloud_0_subnet
+      - network: storage_cloud_0
+        subnet: storage_cloud_0_subnet
+      - network: storage_mgmt_cloud_0
+        subnet: storage_mgmt_cloud_0_subnet
+      - network: tenant_cloud_0
+        subnet: tenant_cloud_0_subnet
+    network_config:
+      template: templates/single_nic_vlans/single_nic_vlans.j2
