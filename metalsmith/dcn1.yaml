@@ -2,8 +2,8 @@
 - name: DistributedCompute
   count: 1
   instances:
-    - hostname: oc0-ceph-3
-      name: oc0-ceph-3
+    - hostname: oc0-compute-0
+      name: oc0-compute-0
   defaults:
     networks:
       - network: ctlplane
@@ -20,8 +20,8 @@
 - name: CephAll
   count: 1
   instances:
-    - hostname: oc0-ceph-4
-      name: oc0-ceph-4
+    - hostname: oc0-ceph-3
+      name: oc0-ceph-3
   defaults:
     networks:
       - network: ctlplane

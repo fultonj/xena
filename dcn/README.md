@@ -27,8 +27,8 @@ and roles.
 +------------------+
 | dcn1             |    DCN quasi-HCI + GlanceBackend: RBD | CephClusterName: dcn1
 +------------------+
-| oc0-ceph-3       |    DistributedCompute (Glance + Nova + Cinder)
-| oc0-ceph-4       |    CephAll (Mon + OSD)
+| oc0-ceph-3       |    CephAll (Mon + OSD)
+| oc0-compute-0    |    DistributedCompute (Glance + Nova + Cinder)
 +------------------+
 ```
 
