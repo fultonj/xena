@@ -38,10 +38,6 @@ if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $VIP deployed-vips-$STACK.yaml
 fi
 # -------------------------------------------------------
-if [[ ! -e control_plane_roles.yaml ]]; then
-    openstack overcloud roles generate Controller ComputeHCI -o control_plane_roles.yaml
-fi
-# -------------------------------------------------------
 if [[ $CEPH -eq 1 ]]; then
     openstack overcloud ceph deploy \
               $PWD/deployed-metal-$STACK.yaml \

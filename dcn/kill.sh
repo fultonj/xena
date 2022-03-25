@@ -22,9 +22,7 @@ done
 rm -f control-plane-export.yaml
 rm -f ceph-export-control-plane.yaml
 rm -f ceph-export-2-stacks.yaml
-rm -rf dcn1
 find . -name deployed* -exec rm -f {} \;
-find . -name *_roles.yaml -exec rm -f {} \;
 
 if [[ $CLEAN -eq 1 ]]; then
     for S in $(cat /tmp/ironic_names_to_clean); do

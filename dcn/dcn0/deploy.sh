@@ -38,14 +38,6 @@ if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $VIP deployed-vips-$STACK.yaml
 fi
 # -------------------------------------------------------
-if [[ ! -e dcn_roles.yaml ]]; then
-    if [[ $STACK == "dcn1" ]]; then
-        openstack overcloud roles generate DistributedCompute CephAll -o dcn_roles.yaml --roles-path ~/templates/roles
-    else
-        openstack overcloud roles generate DistributedComputeHCI DistributedComputeHCIScaleOut -o dcn_roles.yaml --roles-path ~/templates/roles
-    fi
-fi
-# -------------------------------------------------------
 if [[ $CEPH -eq 1 ]]; then
     openstack overcloud ceph deploy \
               $PWD/deployed-metal-$STACK.yaml \
