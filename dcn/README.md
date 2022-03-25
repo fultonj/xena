@@ -34,12 +34,26 @@ and roles.
 
 ## How to deploy it with TripleO
 
-  - Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
-  - Create `control-plane-export.yaml` (`openstack overcloud export -f --stack control-plane`)
-  - Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`)
-  - Deploy dcn0 with [dcn0/deploy.sh](dcn0/deploy.sh)
-<!--  - Deploy dcn1 with [dcnN.sh](dcnN.sh) -->
-  - Create `ceph-export-2-stacks.yaml` (`openstack overcloud export ceph -f --stack dcn0,dcn1`)
+- deploy all virtaul baremetal with [metal.sh](metal.sh)
+```
+for STACK in control-plane dcn0 dcn1; do 
+  ./metal.sh $STACK;
+done
+```
+- deploy all ceph on with [ceph.sh](ceph.sh)
+```
+for STACK in control-plane dcn0 dcn1; do 
+  ./ceph.sh $STACK;
+done
+```
+
+
+- Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
+- Create `control-plane-export.yaml` (`openstack overcloud export -f --stack control-plane`)
+- Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`)
+- Deploy dcn0 with [dcn0/deploy.sh](dcn0/deploy.sh)
+- Deploy dcn1 with [dcn1/deploy.sh](dcn1/deploy.sh)
+- Create `ceph-export-2-stacks.yaml` (`openstack overcloud export ceph -f --stack dcn0,dcn1`)
 - Update control-plane/deploy.sh to use `ceph-export-2-stacks.yaml`
 - Update control-plane/deploy.sh to use [control-plane/glance_update.yaml](control-plane/glance_update.yaml)
 - Re-run control-plane/deploy.sh
