@@ -192,14 +192,14 @@
   tags:
     - compute
   networks:
-    InternalApi:
-      subnet: internal_api_subnet
-    Tenant:
-      subnet: tenant_subnet
-    Storage:
-      subnet: storage_subnet
-    StorageMgmt:
-      subnet: storage_mgmt_subnet
+    InternalApiCloud0:
+      subnet: internal_api_cloud_0_subnet
+    TenantCloud0:
+      subnet: tenant_cloud_0_subnet
+    StorageCloud0:
+      subnet: storage_cloud_0_subnet
+    StorageMgmtCloud0:
+      subnet: storage_mgmt_cloud_0_subnet
   RoleParametersDefault:
     FsAioMaxNumber: 1048576
     TunedProfileName: "throughput-performance"
