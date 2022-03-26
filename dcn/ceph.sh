@@ -14,8 +14,10 @@ pushd $STACK
 
 if [[ $STACK == "control-plane" ]]; then
     export ROLES=control_plane_roles.yaml
+    export CLUSTER=central
 else
     export ROLES=dcn_roles.yaml
+    export CLUSTER=$STACK
 fi
 echo "Using roles file: $ROLES"
 
@@ -27,6 +29,6 @@ openstack overcloud ceph deploy \
           --container-image-prepare ~/containers-prepare-parameter.yaml \
           --network-data ~/oc0-network-data.yaml \
           --roles-data $ROLES \
+          --cluster $CLUSTER \
           --stack $STACK
-
 popd
