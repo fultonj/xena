@@ -34,23 +34,24 @@ and roles.
 
 ## How to deploy it with TripleO
 
-- deploy all virtaul baremetal with [metal.sh](metal.sh)
+Run the [main.sh](main.sh) script which does the following.
+
+- deploy all virtaul baremetal with [metal.sh](metal.sh) (order is flexible)
 ```
 for STACK in control-plane dcn0 dcn1; do 
   ./metal.sh $STACK;
 done
 ```
-- deploy all ceph on with [ceph.sh](ceph.sh)
+- deploy all ceph on with [ceph.sh](ceph.sh) (order is flexible)
 ```
 for STACK in control-plane dcn0 dcn1; do 
   ./ceph.sh $STACK;
 done
 ```
 
-
 - Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
-- Create `control-plane-export.yaml` (`openstack overcloud export -f --stack control-plane`)
-- Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`)
+- Copy `control-plane-export.yaml` from $HOME/overlcoud-deploy/$STACK/$STACK-export.yaml ( see [this patch](https://github.com/openstack/python-tripleoclient/commit/80c43280a8a17c6d06b0fe24ab7df48ef29f24e9) )
+- Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`) (requires [835511](https://review.opendev.org/c/openstack/python-tripleoclient/+/835511) )
 - Deploy dcn0 with [dcn0/deploy.sh](dcn0/deploy.sh)
 - Deploy dcn1 with [dcn1/deploy.sh](dcn1/deploy.sh)
 - Create `ceph-export-2-stacks.yaml` (`openstack overcloud export ceph -f --stack dcn0,dcn1`)
