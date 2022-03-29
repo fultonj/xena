@@ -28,7 +28,7 @@ time openstack overcloud deploy \
      -e ~/templates/environments/low-memory-usage.yaml \
      -e ~/templates/environments/podman.yaml \
      -e ~/templates/environments/docker-ha.yaml \
-     -e ~/templates/environments/cephadm/cephadm.yaml \
+     -e ~/templates/environments/cephadm/cephadm-rbd-only.yaml \
      -e ~/templates/environments/dcn-storage.yaml \
      -r dcn_roles.yaml \
      -n ~/oc0-network-data.yaml \
