@@ -3,11 +3,17 @@
 CLEAN=1
 source ~/stackrc
 
+if [[ $# -eq 0 ]] ; then
+    STACKS=$(ls ~/overcloud-deploy/ | egrep "dcn|control-plane")
+else
+    STACKS=$1
+fi
+
 if [[ $CLEAN -eq 1 ]]; then
     cat /dev/null > /tmp/ironic_names_to_clean
 fi
 
-for STACK in $(ls ~/overcloud-deploy/ | egrep "dcn|control-plane"); do
+for STACK in $STACKS; do
     openstack overcloud delete $STACK --yes
     pushd ../metalsmith
     if [[ $CLEAN -eq 1 ]]; then
@@ -17,12 +23,15 @@ for STACK in $(ls ~/overcloud-deploy/ | egrep "dcn|control-plane"); do
     fi
     bash unprovision.sh $STACK
     popd
+    # remove deployed files
+    find $STACK -name deployed* -exec rm -f {} \;
+    # remove export files
+    if [[ $STACK == "control-plane" ]]; then
+        rm -v -f control-plane-export.yaml ceph-export-control-plane.yaml
+    else
+        rm -v -f ceph-export-2-stacks.yaml
+    fi
 done
-
-rm -f control-plane-export.yaml
-rm -f ceph-export-control-plane.yaml
-rm -f ceph-export-2-stacks.yaml
-find . -name deployed* -exec rm -f {} \;
 
 if [[ $CLEAN -eq 1 ]]; then
     for S in $(cat /tmp/ironic_names_to_clean); do
