@@ -26,6 +26,7 @@ source ~/stackrc
 openstack overcloud ceph deploy \
           $PWD/deployed-metal-$STACK.yaml \
           -y -o $PWD/deployed-ceph-$STACK.yaml \
+          --single-host-defaults \
           --container-image-prepare ~/containers-prepare-parameter.yaml \
           --network-data ~/oc0-network-data.yaml \
           --roles-data $ROLES \
