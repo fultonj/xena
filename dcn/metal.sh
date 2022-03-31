@@ -26,6 +26,10 @@ if [[ ! -e $METAL ]]; then
     echo "$METAL is missing after deployment attempt. Going to retry once."
     pushd ../../metalsmith
     bash undeploy_failures.sh
+    if [ ! $? -eq 0 ]; then
+        echo "Please update nodes in Ironic."
+        exit 1
+    fi
     bash provision.sh $STACK
     popd
     if [[ ! -e $METAL ]]; then

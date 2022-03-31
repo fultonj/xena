@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ~/stackrc
+
 metalsmith -f value -c State -c "Node Name" list > /tmp/results
 
 TOTAL=$(cat /tmp/results | wc -l)
@@ -16,6 +18,24 @@ for NAME in $(grep ERROR /tmp/results | awk {'print $1'}); do
     echo "Scheduled $I of $ERR"
 done
 sleep 2
-echo "Current state"
+echo "Current state per metalsmith"
 metalsmith list
-echo "Try to deploy again"
+
+echo "Checking 'openstack baremetal node list' for failures"
+
+openstack baremetal node list -c Name -c "Provisioning State" -f value \
+          > /tmp/results 2> /dev/null
+if [[ $(grep failed /tmp/results | wc -l ) -gt 0 ]]; then
+    echo "Unfortunately lower level issues require the following:"
+fi
+for NAME in $(grep failed /tmp/results | awk {'print $1'}); do
+    echo "  openstack baremetal node maintenance set $NAME"
+    echo "  openstack baremetal node delete $NAME"
+done
+if [[ $(grep failed /tmp/results | wc -l ) -gt 0 ]]; then
+    echo "  bash ~/tripleo_overcloud_node_import.sh"
+    exit 1
+else
+    echo "Try to deploy again"
+    exit 0
+fi
