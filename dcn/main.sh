@@ -1,12 +1,14 @@
 #!/bin/bash
 
 NEW_CLIENT=0
+METAL=1
+CEPH=1
+EXPORT_CEPH=1
 CENTRAL_DEPLOY=1
 CENTRAL_SANITY=1
 CENTRAL_EXPORT=1
 DCN0_DEPLOY=1
 DCN1_DEPLOY=1
-CENTRAL_UP=1
 
 source ~/stackrc
 
@@ -14,10 +16,35 @@ if [[ $NEW_CLIENT -eq 1 ]]; then
     ../init/python-tripleoclient.sh
 fi
 
+if [[ $METAL -eq 1 ]]; then
+    echo "Deploying Metal for 3 sites"
+    for STACK in control-plane dcn0 dcn1; do
+        ./metal.sh $STACK;
+    done
+fi
+
+if [[ $CEPH -eq 1 ]]; then
+    echo "Deploying Ceph on 3 sites"
+    for STACK in control-plane dcn0 dcn1; do
+        ./ceph.sh $STACK;
+    done
+fi
+
+if [[ $EXPORT_CEPH -eq 1 ]]; then
+    openstack overcloud export ceph -f --stack control-plane
+    openstack overcloud export ceph -f --stack dcn0,dcn1
+    if [[ ! -e ceph-export-control-plane.yaml ]]; then
+        echo "Failure: openstack overcloud export ceph --stack control-plane"
+        exit 1
+    fi
+    if [[ ! -e ceph-export-2-stacks.yaml ]]; then
+        echo "Failure: openstack overcloud export ceph --stack dcn0,dcn1"
+        exit 1
+    fi
+fi
+
 if [[ $CENTRAL_DEPLOY -eq 1 ]]; then
     STACK=control-plane
-    bash metal.sh $STACK
-    bash ceph.sh $STACK
     pushd $STACK
     bash deploy.sh
     popd
@@ -42,7 +69,6 @@ if [[ $CENTRAL_SANITY -eq 1 ]]; then
     fi
 fi
 
-
 if [[ $CENTRAL_EXPORT -eq 1 ]]; then
     # https://github.com/openstack/python-tripleoclient/commit/
     # 80c43280a8a17c6d06b0fe24ab7df48ef29f24e9
@@ -56,17 +82,10 @@ if [[ $CENTRAL_EXPORT -eq 1 ]]; then
             cp -v $SRC .
         fi
     fi
-    openstack overcloud export ceph -f --stack control-plane
-    if [[ ! -e ceph-export-control-plane.yaml ]]; then
-        echo "Failure: openstack overcloud export ceph --stack control-plane"
-        exit 1
-    fi
 fi
 
 if [[ $DCN0_DEPLOY -eq 1 ]]; then
     STACK=dcn0
-    bash metal.sh $STACK
-    bash ceph.sh $STACK
     pushd $STACK
     bash deploy.sh
     popd
@@ -82,28 +101,8 @@ fi
 
 if [[ $DCN1_DEPLOY -eq 1 ]]; then
     STACK=dcn1
-    bash metal.sh $STACK
-    bash ceph.sh $STACK
     pushd $STACK
     bash deploy.sh
-    popd
-fi
-
-if [[ $CENTRAL_UP -eq 1 ]]; then
-    openstack overcloud export ceph -f --stack dcn0,dcn1
-    if [[ ! -e ceph-export-2-stacks.yaml ]]; then
-        echo "Failure: openstack overcloud export ceph --stack dcn0,dcn1"
-        exit 1
-    fi
-    pushd control-plane
-    if [[ -e deploy-update.sh ]]; then
-        rm -f deploy-update.sh
-    fi
-    cp deploy.sh deploy-update.sh
-    sed -i s/qemu/qemu\ \\\\/g deploy-update.sh
-    sed -i s/#\ ONE/\\-e\ glance_update.yaml\ \\\\/g deploy-update.sh
-    sed -i s/#\ TWO/\\-e\ \\.\\.\\/ceph-export-2-stacks.yaml/g deploy-update.sh
-    bash deploy-update.sh
     popd
     echo "You may now test the deployment with validations/use-multistore-glance.sh"
 fi

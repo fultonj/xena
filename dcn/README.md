@@ -32,6 +32,39 @@ and roles.
 +------------------+
 ```
 
+## Deployment Order
+
+The usual order is:
+
+1. deploy central
+2. export central overcloud
+3. export central ceph
+4. deploy dcn0
+5. deploy dcn1
+6. export dcn0,dcn1 ceph
+7. update central (adding glance and ceph from dcn0 and dcn1)
+
+Because we can now deploy
+[metal before overcloud](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/provisioning/baremetal_provision.html)
+and
+[ceph before overcloud](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/features/deployed_ceph.html), another order is possible:
+
+1. deploy metal for central,dcn0,dcn1
+2. deploy ceph for central,dcn0,dcn1
+3. export central ceph
+4. export dcn0,dcn1 ceph
+5. deploy central overcloud with output of 4 and GlanceMultistoreConfig
+6. export central overcloud
+7. deploy dcn0 overcloud with output of 3,6 and GlanceMultistoreConfig
+8. deploy dcn1 overcloud with output of 3,6 and GlanceMultistoreConfig
+
+After step 5, central glance won't work because it will look for other
+glance backends that don't yet exist. In exchange though we can skip
+the final stack update. This pattern can be extended for an arbitrary
+number of DCN sites in theory, though if DCN sites will be added
+later, then the central stack would need an update; i.e. you'd go back
+to the old pattern.
+
 ## How to deploy it with TripleO
 
 Run the [main.sh](main.sh) script which does the following.
@@ -49,15 +82,12 @@ for STACK in control-plane dcn0 dcn1; do
 done
 ```
 
+- Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`) (requires [835511](https://review.opendev.org/c/openstack/python-tripleoclient/+/835511) )
+- Create `ceph-export-2-stacks.yaml` (`openstack overcloud export ceph -f --stack dcn0,dcn1`)
 - Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
 - Copy `control-plane-export.yaml` from $HOME/overlcoud-deploy/$STACK/$STACK-export.yaml ( see [this patch](https://github.com/openstack/python-tripleoclient/commit/80c43280a8a17c6d06b0fe24ab7df48ef29f24e9) )
-- Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`) (requires [835511](https://review.opendev.org/c/openstack/python-tripleoclient/+/835511) )
 - Deploy dcn0 with [dcn0/deploy.sh](dcn0/deploy.sh)
 - Deploy dcn1 with [dcn1/deploy.sh](dcn1/deploy.sh)
-- Create `ceph-export-2-stacks.yaml` (`openstack overcloud export ceph -f --stack dcn0,dcn1`)
-- Update control-plane/deploy.sh to use `ceph-export-2-stacks.yaml`
-- Update control-plane/deploy.sh to use [control-plane/glance_update.yaml](control-plane/glance_update.yaml)
-- Re-run control-plane/deploy.sh
 
 Each deploy script will use [metalsmith](../metalsmith)
 to [provision](provision.sh) the nodes for each stack

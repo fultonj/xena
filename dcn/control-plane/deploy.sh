@@ -45,11 +45,6 @@ time openstack overcloud deploy \
      -e deployed-metal-$STACK.yaml \
      -e deployed-ceph-$STACK.yaml \
      -e overrides.yaml \
+     -e glance_update.yaml \
+     -e ../ceph-export-2-stacks.yaml \
      --libvirt-type qemu
-     # ONE
-     # TWO
-
-# For stack updates when central dcn will use dcn{0,1} ceph clusters
-# -e glance_update.yaml \
-# -e ../ceph-export-2-stacks.yaml \
-
