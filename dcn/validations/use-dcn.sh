@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-AZ="dcn0"
+AZ="dcn1"
 
 SHOWAZ=1
 NOVA=1
 DEPS=1
 CINDER=1
 PUBLIC=0
-SCALEOUT=1
+SCALEOUT=0
 
 IMAGE=cirros
 
@@ -30,7 +30,7 @@ if [[ $? -gt 0 ]]; then
     exit 1
 fi
 
-export PRIVATE_NETWORK_CIDR=192.168.200.0/24
+export PRIVATE_NETWORK_CIDR=192.168.201.0/24
 if [[ $PUBLIC -eq 1 ]]; then
     export PUBLIC_NETWORK_CIDR=192.168.24.0/24
     export GATEWAY=192.168.24.1
