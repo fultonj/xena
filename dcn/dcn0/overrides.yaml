@@ -9,6 +9,6 @@ parameter_defaults:
   CinderVolumeCluster: dcn0
   NovaAZAttach: false
   ManageNetworks: false
-  CephConfigPath: "/etc/ceph"
+  # CephConfigPath: "/etc/ceph"
   CephPoolDefaultSize: 1
   CephPoolDefaultPgNum: 32
