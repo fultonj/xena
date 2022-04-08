@@ -3,12 +3,12 @@
 NEW_CLIENT=0
 METAL=1
 CEPH=1
-EXPORT_CEPH=1
-CENTRAL_DEPLOY=1
-CENTRAL_SANITY=1
-CENTRAL_EXPORT=1
-DCN0_DEPLOY=1
-DCN1_DEPLOY=1
+EXPORT_CEPH=0
+CENTRAL_DEPLOY=0
+CENTRAL_SANITY=0
+CENTRAL_EXPORT=0
+DCN0_DEPLOY=0
+DCN1_DEPLOY=0
 
 source ~/stackrc
 
@@ -29,6 +29,9 @@ if [[ $CEPH -eq 1 ]]; then
         ./ceph.sh $STACK;
     done
 fi
+
+echo "Need to create pools/keys before exporting ceph"
+exit 1
 
 if [[ $EXPORT_CEPH -eq 1 ]]; then
     openstack overcloud export ceph -f --stack control-plane
