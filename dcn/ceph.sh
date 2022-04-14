@@ -9,7 +9,13 @@ if [[ ! -d $STACK ]]; then
     echo "The directory $STACK was not found."
     exit 1
 fi
-echo "Deploying ceph for $STACK"
+echo "Deploying ceph for $STACK with the following pools."
+
+cp -f pools_template.yml pools.yml
+sed -i pools.yml -e s/STACK/$STACK/g
+cat pools.yml
+echo "---"
+
 pushd $STACK
 
 if [[ $STACK == "control-plane" ]]; then
@@ -31,5 +37,8 @@ openstack overcloud ceph deploy \
           --network-data ~/oc0-network-data.yaml \
           --roles-data $ROLES \
           --cluster $CLUSTER \
-          --stack $STACK
+          --stack $STACK \
+          --force --ansible-extra-vars ../pools.yml
 popd
+
+rm -f -v pool.yml

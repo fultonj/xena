@@ -58,13 +58,11 @@ and
 7. deploy dcn0 overcloud with output of 3,6 and GlanceMultistoreConfig
 8. deploy dcn1 overcloud with output of 3,6 and GlanceMultistoreConfig
 
-Steps 3,4 are blocked because pools/keys are not created until steps
-5,7,8. However, I could easily add a new option to
-python-tripleoclient to pass
-[tripleo_cephadm_pools](https://github.com/openstack/tripleo-ansible/blob/master/tripleo_ansible/roles/tripleo_cephadm/tasks/pools.yaml#L38)
-and then if passed import the
-[create pools task](https://github.com/openstack/tripleo-ansible/blob/master/tripleo_ansible/playbooks/cephadm.yml#L53-L56)
-after the [apply the ceph spec task](https://github.com/openstack/tripleo-ansible/blob/master/tripleo_ansible/playbooks/cli-deployed-ceph.yaml#L216).
+Steps 3,4 would be blocked because pools/keys are not usually created
+until steps 5,7,8. However, with
+https://review.opendev.org/q/topic:deployed_pools
+it's possible to create the pools and cephx key before deploying the
+overcloud.
 
 After step 5, central glance won't work because it will look for other
 glance backends that don't yet exist. In exchange though we can skip

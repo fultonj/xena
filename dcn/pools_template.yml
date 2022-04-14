@@ -1,0 +1,15 @@
+---
+tripleo_cephadm_pools:
+    - name: vms
+      pg_autoscale_mode: True
+      target_size_ratio: 0.3
+      application: rbd
+    - name: volumes
+      pg_autoscale_mode: True
+      target_size_ratio: 0.5
+      application: rbd
+    - name: images
+      target_size_ratio: 0.2
+      pg_autoscale_mode: True
+      application: rbd
+tripleo_ceph_client_vars: "/home/stack/overcloud-deploy/STACK/cephadm/ceph_client.yml"
