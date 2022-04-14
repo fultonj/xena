@@ -88,8 +88,7 @@ for STACK in control-plane dcn0 dcn1; do
 done
 ```
 
-- Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`) (requires [835511](https://review.opendev.org/c/openstack/python-tripleoclient/+/835511) )
-- Create `ceph-export-2-stacks.yaml` (`openstack overcloud export ceph -f --stack dcn0,dcn1`)
+- Create `ceph-export-control-plane.yaml` and `ceph-export-2-stacks.yaml` with (`openstack overcloud export ceph`) (requires [835511](https://review.opendev.org/c/openstack/python-tripleoclient/+/835511) )
 - Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
 - Copy `control-plane-export.yaml` from $HOME/overlcoud-deploy/$STACK/$STACK-export.yaml ( see [this patch](https://github.com/openstack/python-tripleoclient/commit/80c43280a8a17c6d06b0fe24ab7df48ef29f24e9) )
 - Deploy dcn0 with [dcn0/deploy.sh](dcn0/deploy.sh)

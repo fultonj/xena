@@ -31,14 +31,18 @@ if [[ $CEPH -eq 1 ]]; then
 fi
 
 if [[ $EXPORT_CEPH -eq 1 ]]; then
-    openstack overcloud export ceph -f --stack control-plane
-    openstack overcloud export ceph -f --stack dcn0,dcn1
+    openstack overcloud export ceph -f \
+              --config-download-dir /home/stack/overcloud-deploy/ \
+              --stack control-plane
+    openstack overcloud export ceph -f \
+              --config-download-dir /home/stack/overcloud-deploy/ \
+              --stack dcn0,dcn1
     if [[ ! -e ceph-export-control-plane.yaml ]]; then
-        echo "Failure: openstack overcloud export ceph --stack control-plane"
+        echo "Failure: exporting ceph from control-plane site"
         exit 1
     fi
     if [[ ! -e ceph-export-2-stacks.yaml ]]; then
-        echo "Failure: openstack overcloud export ceph --stack dcn0,dcn1"
+        echo "Failure: exporting ceph from dcn0 and dcn1 site"
         exit 1
     fi
 fi
