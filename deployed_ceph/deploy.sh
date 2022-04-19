@@ -5,10 +5,10 @@ CEPH=1
 OVERCLOUD=1
 DOWN=0
 
-#STACK=other-3
-#NODE_COUNT=3
-STACK=overcloud-0
-NODE_COUNT=7
+STACK=standard-3
+NODE_COUNT=3
+#STACK=overcloud-0
+#NODE_COUNT=7
 DIR=/home/stack/overcloud-deploy/$STACK/config-download
 
 source ~/stackrc
@@ -85,7 +85,7 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          -r ~/oc0-role-data.yaml \
          -n ~/oc0-network-data.yaml \
          -e ~/containers-prepare-parameter.yaml \
-         -e ~/re-generated-container-prepare.yaml \
+         -e ~/generated-container-prepare-overcloud.yaml \
          -e ~/oc0-domain.yaml \
          -e ~/overcloud-0-yml/nova-tpm.yaml \
          -e ~/overcloud-0-yml/network-env.yaml \

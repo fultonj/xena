@@ -1,8 +1,8 @@
 #!/bin/bash
 
 CLEAN=1
-#STACK=other-3
-STACK=overcloud-0
+STACK=standard-3
+#STACK=overcloud-0
 METAL=deployed-metal-$STACK.yaml
 TMP=/tmp/ceph_nodes_$STACK
 grep cephstorage $METAL \

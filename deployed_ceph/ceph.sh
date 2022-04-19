@@ -11,8 +11,8 @@ OLD_ANSIBLE=0
 CLEAN=0
 
 # GET AN INVENTORY
-STACK=overcloud-0
-# STACK=other-3
+# STACK=overcloud-0
+STACK=standard-3
 WORKING_DIR="$HOME/overcloud-deploy/${STACK}"
 INV="$WORKING_DIR/tripleo-ansible-inventory.yaml"
 # This inventory is a result of baremetal provisioning, see:
@@ -59,6 +59,7 @@ if [[ $DEPLOY -eq 1 ]]; then
               --container-image-prepare ~/containers-prepare-parameter.yaml \
               --cephadm-extra-args '--log-to-file --skip-prepare-host' \
               --force \
+              --single-host-defaults \
               --stack $STACK
 
     # --config assimilate_ceph.conf \
