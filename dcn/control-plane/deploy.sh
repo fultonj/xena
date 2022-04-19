@@ -35,7 +35,7 @@ time openstack overcloud deploy \
      -r control_plane_roles.yaml \
      -n ~/oc0-network-data.yaml \
      -e ~/containers-prepare-parameter.yaml \
-     -e ~/re-generated-container-prepare.yaml \
+     -e ~/generated-container-prepare-overcloud.yaml \
      -e ~/oc0-domain.yaml \
      -e ~/overcloud-0-yml/nova-tpm.yaml \
      -e ~/overcloud-0-yml/network-env.yaml \
