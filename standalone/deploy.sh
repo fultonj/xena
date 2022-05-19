@@ -51,6 +51,8 @@ sudo openstack tripleo deploy \
      -e ~/containers-prepare-parameters.yaml \
      -e standalone_parameters.yaml \
      -e deployed_ceph.yaml \
+     -e deployed_network_env.yaml \
+     --networks-file ~/xena/standalone/network_data.yaml \
      --output-dir $HOME \
      $@
 

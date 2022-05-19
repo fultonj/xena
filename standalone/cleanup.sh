@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-FILES=1
+FILES=0
 CEPH=1
 STACK=0
 FAKE_DISK=1
 REAL_DISK=0
+NET=0
 
 if [ $FILES -eq 1 ]; then
     rm -f -v ceph_spec.yaml
@@ -107,4 +108,9 @@ if [ $REAL_DISK -eq 1 ]; then
         sudo dmsetup remove $DM;
     done
     sudo sgdisk -Z /dev/vd{b,c,d,e,f}
+fi
+
+if [ $NET -eq 1 ]; then
+    sudo ip link set ceph-dummy0 down
+    sudo ip link delete ceph-dummy0 type dummy
 fi

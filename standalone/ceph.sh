@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 
 CLIENT=0
-SPEC=0
-USER=0
-CEPH=0
-ANSIBLE=1
-CEPH_IP=192.168.122.252
+NET=1
+SPEC=1
+USER=1
+CEPH=1
+ANSIBLE=0
+CEPH_IP=192.168.42.1
 
 if [ $CLIENT -eq 1 ]; then
     bash ../init/python-tripleoclient.sh
+fi
+
+if [ $NET -eq 1 ]; then
+    sudo ip link add ceph-dummy0 type dummy
+    sudo ip addr add $CEPH_IP/24 dev ceph-dummy0
+    sudo ip link set ceph-dummy0 up
 fi
 
 if [ $SPEC -eq 1 ]; then
@@ -32,6 +39,9 @@ if [ $CEPH -eq 1 ]; then
           --mon-ip $CEPH_IP \
           --ceph-spec ceph_spec.yaml \
           --skip-user-create \
+          --skip-hosts-config \
+          --config initial-ceph.conf \
+          --network-data network_data.yaml \
           -y --output deployed_ceph.yaml
 fi
 
