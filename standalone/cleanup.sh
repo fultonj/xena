@@ -12,6 +12,8 @@ if [ $FILES -eq 1 ]; then
     rm -f -v deployed_ceph.yaml
     rm -f -v cirros*
     rm -f -v standalone_parameters.yaml
+    sudo rm -f -v /home/ceph-admin/assimilate_ceph.conf
+    sudo rm -f -v /home/ceph-admin/specs/*
 fi
 
 if [ $CEPH -eq 1 ]; then
