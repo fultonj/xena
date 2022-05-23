@@ -8,3 +8,13 @@
     storage_subnet:
       ip_subnet: '192.168.42.0/24'
       allocation_pools: [{'start': '192.168.42.4', 'end': '192.168.42.250'}]
+- name: StorageMgmt
+  mtu: 1350
+  vip: true
+  name_lower: storage_mgmt
+  dns_domain: storagemgmt.mydomain.tld.
+  service_net_map_replace: storage_mgmt
+  subnets:
+    storage_mgmt_subnet:
+      ip_subnet: '192.168.42.0/24'
+      allocation_pools: [{'start': '192.168.42.4', 'end': '192.168.42.250'}]
