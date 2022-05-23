@@ -5,7 +5,7 @@ CEPH=1
 STACK=0
 FAKE_DISK=1
 REAL_DISK=0
-NET=0
+NET=1
 
 if [ $FILES -eq 1 ]; then
     rm -f -v ceph_spec.yaml
@@ -55,7 +55,7 @@ if [ $STACK -eq 1 ]; then
 
     echo "Tearing down TripleO environment"
     if type pcs &> /dev/null; then
-        sudo pcs cluster destroy
+        sudo pcs cluster destroy --force
     fi
     if type podman &> /dev/null; then
         echo "Removing podman containers and images (takes times...)"
