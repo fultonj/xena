@@ -47,6 +47,7 @@ sudo openstack tripleo deploy \
      --control-virtual-ip $VIP \
      -r ~/templates/roles/Standalone.yaml \
      -e ~/templates/environments/standalone/standalone-tripleo.yaml \
+     -e ~/templates/environments/deployed-network-environment.yaml \
      -e ~/templates/environments/cephadm/cephadm.yaml \
      -e ~/containers-prepare-parameters.yaml \
      -e standalone_parameters.yaml \

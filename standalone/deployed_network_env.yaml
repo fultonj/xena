@@ -1,6 +1,20 @@
 resource_registry:
   OS::TripleO::Network: /usr/share/openstack-tripleo-heat-templates/network/deployed_networks.yaml
 parameter_defaults:
+  NodePortMap:
+    standalone:
+      ctlplane:
+        ip_address: 192.168.24.2
+        ip_subnet: 192.168.24.2/24
+        ip_address_uri: 192.168.24.2
+      storage:
+        ip_address: 192.168.42.1
+        ip_subnet: 192.168.42.1/24
+        ip_address_uri: 192.168.42.1
+      storage_mgmt:
+        ip_address: 192.168.42.1
+        ip_subnet: 192.168.42.1/24
+        ip_address_uri: 192.168.42.1
   DeployedNetworkEnvironment:
     net_attributes_map:
       storage:
@@ -45,5 +59,5 @@ parameter_defaults:
       storage_mgmt:
       - 192.168.42.0/24
     net_ip_version_map:
-          storage: 4
-          storage_mgmt: 4
+      storage: 4
+      storage_mgmt: 4
