@@ -3,7 +3,6 @@
 IRONIC=1
 CEPH=1
 OVERCLOUD=1
-DOWN=0
 
 STACK=hci
 NODE_COUNT=6
@@ -11,6 +10,8 @@ NODE_COUNT=6
 source ~/stackrc
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
+NET="../metalsmith/deployed-network-${STACK}.yaml"
+VIP="../metalsmith/deployed-vips-${STACK}.yaml"
 if [[ $IRONIC -eq 1 ]]; then
     if [[ ! -e $METAL ]]; then
         echo "$METAL is missing. Deploying nodes with metalsmith."
@@ -29,9 +30,12 @@ if [[ $IRONIC -eq 1 ]]; then
             exit 1
         fi
     fi
+    echo "Finished with baremetal"
 fi
-if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
+if [[ ! -e deployed-metal-$STACK.yaml ]]; then
     cp $METAL deployed-metal-$STACK.yaml
+    cp $NET deployed-network-$STACK.yaml
+    cp $VIP deployed-vips-$STACK.yaml
 fi
 # -------------------------------------------------------
 if [[ $CEPH -eq 1 ]]; then

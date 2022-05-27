@@ -36,7 +36,7 @@ if [[ $IRONIC -eq 1 ]]; then
     fi
     echo "Finished with baremetal"
 fi
-if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
+if [[ ! -e deployed-metal-$STACK.yaml ]]; then
     cp $METAL deployed-metal-$STACK.yaml
     cp $NET deployed-network-$STACK.yaml
     cp $VIP deployed-vips-$STACK.yaml
