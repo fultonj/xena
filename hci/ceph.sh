@@ -17,9 +17,6 @@ if [[ $DEPLOY -eq 1 ]]; then
               --cephadm-extra-args '--log-to-file --skip-prepare-host' \
               --force \
               --config assimilate_ceph.conf \
-              --skip-user-create \
-              --skip-hosts-config \
-              --skip-container-registry-config \
               --stack $STACK
 fi
 
