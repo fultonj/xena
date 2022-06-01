@@ -14,4 +14,5 @@ parameter_defaults:
       ip_address_uri: 192.168.42.2
       ip_subnet: 192.168.42.2/24
 resource_registry:
+  OS::TripleO::Network::Ports::ControlPlaneVipPort: network/ports/deployed_vip_ctlplane.yaml
   OS::TripleO::Network::Ports::StorageVipPort: network/ports/deployed_vip_storage.yaml
