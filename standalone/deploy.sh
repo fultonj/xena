@@ -53,6 +53,7 @@ sudo openstack tripleo deploy \
      -e standalone_parameters.yaml \
      -e deployed_ceph.yaml \
      -e deployed_network_env.yaml \
+     -e deployed_vip_env.yaml \
      --networks-file ~/xena/standalone/network_data.yaml \
      --output-dir $HOME \
      $@
