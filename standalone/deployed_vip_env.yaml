@@ -9,15 +9,9 @@ parameter_defaults:
     subnets:
     - ip_version: 4
   VipPortMap:
-    storage_cloud:
-      ip_address: 192.168.42.1
-      ip_address_uri: 192.168.42.1
-      ip_subnet: 192.168.42.1/24
-    storage_mgmt_cloud:
-      ip_address: 192.168.42.1
-      ip_address_uri: 192.168.42.1
-      ip_subnet: 192.168.42.1/24
+    storage:
+      ip_address: 192.168.42.2
+      ip_address_uri: 192.168.42.2
+      ip_subnet: 192.168.42.2/24
 resource_registry:
-  OS::TripleO::Network::Ports::ControlPlaneVipPort: /usr/share/openstack-tripleo-heat-templates/network/ports/deployed_vip_ctlplane.yaml
-  OS::TripleO::Network::Ports::StorageCloudVipPort: /home/stack/xena/standalone/deployed_vip_storage.yaml
-  OS::TripleO::Network::Ports::StorageMgmtCloudVipPort: /home/stack/xena/standalone/deployed_vip_storage_mgmt.yaml
+  OS::TripleO::Network::Ports::StorageVipPort: network/ports/deployed_vip_storage.yaml

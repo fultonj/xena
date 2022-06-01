@@ -7,6 +7,7 @@ USER=1
 CEPH=1
 ANSIBLE=0
 CEPH_IP=192.168.42.1
+STORAGE_VIP=192.168.42.2
 
 if [ $CLIENT -eq 1 ]; then
     bash ../init/python-tripleoclient.sh
@@ -15,6 +16,7 @@ fi
 if [ $NET -eq 1 ]; then
     sudo ip link add ceph-dummy0 type dummy
     sudo ip addr add $CEPH_IP/24 dev ceph-dummy0
+    sudo ip addr add $STORAGE_VIP/32 dev ceph-dummy0
     sudo ip link set ceph-dummy0 up
 fi
 
@@ -42,6 +44,7 @@ if [ $CEPH -eq 1 ]; then
           --skip-hosts-config \
           --config initial-ceph.conf \
           --network-data network_data.yaml \
+          --cluster-network-name storage \
           -y --output deployed_ceph.yaml
 fi
 

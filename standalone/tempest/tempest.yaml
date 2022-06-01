@@ -21,6 +21,7 @@
       auth.tempest_roles: "Member"
     tempest_test_whitelist:
       - 'tempest.api.identity.v3'
+      # - 'tempest.scenario.test_object_storage_basic_ops'
       # - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern'
   gather_facts: true
   roles:
