@@ -1,0 +1,62 @@
+---
+- name: Test example
+  gather_facts: false
+  hosts: localhost
+  vars:
+    rbd_manipulation: true
+    cephfs_manipulation: true
+    build_pools: true
+    show_all_pools: true
+  tasks:
+    - name: Include heat vars from CI
+      include_vars: vars_from_external_deploy_steps_tasks_step2.yaml
+
+    - block:
+        - name: Change openstack (ceph_pools) heat vars for diff usecases
+          set_fact:
+            ceph_pools: >-
+              {{ ceph_pools | dict2items |
+                 rejectattr("key", "eq", "pg_num") |
+                 list | items2dict }}
+        - name: Show changed manila heat vars
+          debug:
+            msg: "{{ ceph_pools }}"
+      when: rbd_manipulation
+
+    - block:
+        - name: Change manila heat vars for diff usecases
+          set_fact:
+            manila_pools: >-
+              {{ manila_pools | dict2items |
+                 rejectattr("key", "eq", "data_pg_num") |
+                 rejectattr("key", "eq", "metadata_pg_num") |             
+                 list | items2dict }}
+        - name: Show changed manila heat vars
+          debug:
+            msg: "{{ manila_pools }}"
+      when: cephfs_manipulation
+
+    - name: Call build_pools.yml
+      include_role:
+        name: tripleo_run_cephadm
+        tasks_from: build_pools.yml
+      vars:
+        tripleo_pool_images: "{{ ceph_pools.glance_pool.enabled }}"
+        tripleo_pool_vms: "{{ ceph_pools.nova_pool.enabled }}"
+        tripleo_pool_volumes: "{{ ceph_pools.cinder_pool.enabled }}"
+        tripleo_pool_backup: "{{ ceph_pools.cinder_backup_pool.enabled }}"
+        tripleo_pool_metrics: "{{ ceph_pools.gnocchi_pool.enabled }}"
+      when:
+        - build_pools
+
+    - name: Show pool facts
+      debug:
+        msg: "{{ item }}"
+      loop:
+        - "{{ images }}"
+        - "{{ vms }}"
+        - "{{ cephfs_data }}"
+        - "{{ cephfs_metadata }}"
+        - "{{ openstack_pools }}"
+      when:
+        - show_all_pools
