@@ -1,5 +1,6 @@
 #!/bin/bash
 
+INTROSPECT=0
 IRONIC=1
 CEPH=1
 OVERCLOUD=1
@@ -8,6 +9,18 @@ STACK=hci
 NODE_COUNT=6
 
 source ~/stackrc
+# -------------------------------------------------------
+if [[ $INTROSPECT -eq 1 ]]; then
+    openstack baremetal node list -c UUID -f value > /tmp/uuids
+    for UUID in $(cat /tmp/uuids); do
+        openstack baremetal node manage $UUID
+    done
+    openstack overcloud node import --introspect --provide ~/baremetal.json
+fi
+INTROSPECTION_LIST=$(openstack baremetal introspection list -f json)
+if [[ $INTROSPECTION_LIST == '[]' ]]; then
+    echo "WARNING: Nodes have not been introspected."
+fi
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
 NET="../metalsmith/deployed-network-${STACK}.yaml"
@@ -90,5 +103,9 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          -e deployed-network-$STACK.yaml \
          -e deployed-metal-$STACK.yaml \
          -e deployed_ceph.yaml
+
+# park these here for now:
+#  -p ~/templates/plan-samples/plan-environment-derived-params.yaml \
+#  -e overrides.yaml
 
 fi
