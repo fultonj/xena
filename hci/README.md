@@ -1,19 +1,14 @@
 # HCI Deployment
 
-Variation of [standard](../standard) but for HCI
+Variation of [deployed_ceph](../deployed_ceph) but for HCI
 
-## Workarounds
+## Scripts
 
-- [heat_patch.sh](../workarounds/heat/heat_patch.sh)
-- [get_ceph_container.sh](../workarounds/podman/get_ceph_container.sh)
-
-## Deploy
-
-- [deploy.sh](deploy.sh)
+- [deploy.sh](deploy.sh) (calls [ceph.sh](ceph.sh))
 - [validate.sh](validate.sh)
+- [undeploy.sh](undeploy.sh)
 
 ## Topology
 
 - 3 controllers
 - 3 hci-computes
-
