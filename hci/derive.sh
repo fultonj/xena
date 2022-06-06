@@ -30,4 +30,4 @@ fi
 ansible-playbook derive-local-hci-parameters.yml \
                  -vvv \
                  -e ironic_node_id=$UUID \
-                 -e heat_environment_input_file=overrides.yaml
+                 -e heat_environment_input_file=hci.yaml

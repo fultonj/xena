@@ -1,0 +1,8 @@
+---
+parameter_defaults:
+  # CephHciOsdType: hdd
+  # CephHciOsdCount: 4
+  # Manually overriding Nova reserved memory
+  # instead of deriving it from the params above
+  ComputeHCIParameters:
+    NovaReservedHostMemory: 75000

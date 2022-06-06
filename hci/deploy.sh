@@ -102,10 +102,10 @@ if [[ $OVERCLOUD -eq 1 ]]; then
          -e deployed-vips-$STACK.yaml \
          -e deployed-network-$STACK.yaml \
          -e deployed-metal-$STACK.yaml \
-         -e deployed_ceph.yaml
+         -e deployed_ceph.yaml \
+         -e hci.yaml
 
-# park these here for now:
-#  -p ~/templates/plan-samples/plan-environment-derived-params.yaml \
-#  -e overrides.yaml
+    # park this here:
+    #  -p ~/templates/plan-samples/plan-environment-derived-params.yaml \
 
 fi

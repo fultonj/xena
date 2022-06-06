@@ -1,4 +1,0 @@
----
-parameter_defaults:
-  CephHciOsdType: hdd
-  CephHciOsdCount: 4
